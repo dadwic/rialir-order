@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from '@mui/material/styles';
+import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
 import OrderForm from './components/Order/Form';
 import AppProvider from './AppProvider';
 import theme from './utils/theme';
@@ -14,7 +15,9 @@ root.render(
     <AppProvider>
       <RTL>
         <ThemeProvider theme={theme}>
-          <OrderForm />
+          <ScopedCssBaseline>
+            <OrderForm />
+          </ScopedCssBaseline>
         </ThemeProvider>
       </RTL>
     </AppProvider>
