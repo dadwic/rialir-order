@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import OrderForm from './components/Order/Form';
 import AppProvider from './AppProvider';
 import theme from './utils/theme';
@@ -13,11 +14,10 @@ root.render(
   <React.StrictMode>
     <AppProvider>
       <RTL>
-        <StyledEngineProvider injectFirst>
-          <ThemeProvider theme={theme}>
-            <OrderForm />
-          </ThemeProvider>
-        </StyledEngineProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <OrderForm />
+        </ThemeProvider>
       </RTL>
     </AppProvider>
   </React.StrictMode>
