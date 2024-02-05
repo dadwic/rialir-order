@@ -14,7 +14,6 @@ import TableRow from '@mui/material/TableRow';
 import { numFormat, persianNumber } from '../../utils';
 import { AppContext } from '../../context';
 import Logo from '../Logo';
-import URL from '../URL';
 
 moment.loadPersian({ usePersianDigits: true, dialect: 'persian-modern' });
 
@@ -22,20 +21,7 @@ export default function ShippingInvoice({ onEdit }) {
   const { order } = useContext(AppContext);
 
   return (
-    <Box mt={2}>
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        onClick={onEdit}
-      >
-        <img
-          width={216}
-          src="https://www.rialir.com/wp-content/uploads/2023/09/logo-2x.png"
-        />
-        <URL />
-      </Box>
+    <Box>
       <Typography
         variant="h6"
         textAlign="center"

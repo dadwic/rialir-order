@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from '@mui/material/styles';
-import AppContainer from './components/AppContainer';
 import OrderForm from './components/Order/Form';
 import AppProvider from './AppProvider';
 import theme from './utils/theme';
@@ -15,9 +14,7 @@ root.render(
     <AppProvider>
       <RTL>
         <ThemeProvider theme={theme}>
-          <AppContainer>
-            <OrderForm />
-          </AppContainer>
+          <OrderForm />
         </ThemeProvider>
       </RTL>
     </AppProvider>
