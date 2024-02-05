@@ -7,7 +7,7 @@ export default function AppProvider({ children }) {
       subtotal: '',
       invoiceTotal: '',
       products: [{ name: '', weight: '', shoe: false }],
-      description: '',
+      description: 'test',
     },
   });
 
