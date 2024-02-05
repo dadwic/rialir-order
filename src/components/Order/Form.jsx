@@ -123,8 +123,6 @@ export default function PricingForm() {
           ))}
           <Grid item xs={12}>
             <Input
-              multiline
-              rows={4}
               control={control}
               name="description"
               id="description"
