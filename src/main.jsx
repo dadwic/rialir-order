@@ -27,6 +27,7 @@ const cacheRtl = createCache({
 const theme = createTheme({
   typography: {
     fontFamily: 'Vazirmatn',
+    htmlFontSize: 10,
   },
   palette: {
     primary: {
