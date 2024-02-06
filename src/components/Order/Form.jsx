@@ -59,6 +59,7 @@ export default function PricingForm() {
     >
       <Box
         ref={form}
+        method="post"
         component="form"
         onSubmit={handleSubmit(onSubmit)}
         noValidate
