@@ -13,11 +13,6 @@ export default function Input({ control, name, onPaste, ...props }) {
           fullWidth
           error={Boolean(error)}
           helperText={error?.message}
-          onPaste={(e) =>
-            field.onChange(
-              '0' + e.clipboardData.getData('text').replace(/\s+|(.+98)/g, '')
-            )
-          }
           {...props}
         />
       )}

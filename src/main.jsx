@@ -1,25 +1,63 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import { ThemeProvider } from '@mui/material/styles';
-import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import rtlPlugin from 'stylis-plugin-rtl';
+import { prefixer } from 'stylis';
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
 import OrderForm from './components/Order/Form';
 import AppProvider from './AppProvider';
-import theme from './utils/theme';
-import RTL from './RTL';
 
-const rootElement = document.getElementById('order-app');
-const root = createRoot(rootElement);
+const container = document.querySelector('#order-app');
+const shadowContainer = container.attachShadow({ mode: 'open' });
+const shadowRootElement = document.createElement('div');
+shadowContainer.appendChild(shadowRootElement);
 
-root.render(
+// Create rtl cache
+const cacheRtl = createCache({
+  key: 'muirtl',
+  prepend: true,
+  container: shadowContainer,
+  stylisPlugins: [prefixer, rtlPlugin],
+});
+
+// Create a theme instance
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#556cd6',
+    },
+    secondary: {
+      main: '#19857b',
+    },
+  },
+  components: {
+    MuiPopover: {
+      defaultProps: {
+        container: shadowRootElement,
+      },
+    },
+    MuiPopper: {
+      defaultProps: {
+        container: shadowRootElement,
+      },
+    },
+    MuiModal: {
+      defaultProps: {
+        container: shadowRootElement,
+      },
+    },
+  },
+});
+
+createRoot(shadowContainer).render(
   <React.StrictMode>
     <AppProvider>
-      <RTL>
+      <CacheProvider value={cacheRtl}>
         <ThemeProvider theme={theme}>
-          <ScopedCssBaseline>
-            <OrderForm />
-          </ScopedCssBaseline>
+          <OrderForm />
         </ThemeProvider>
-      </RTL>
+      </CacheProvider>
     </AppProvider>
   </React.StrictMode>
 );
