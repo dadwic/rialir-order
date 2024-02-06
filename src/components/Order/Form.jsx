@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
+import LiraIcon from '@mui/icons-material/CurrencyLira';
 import { AppContext, AppDispatchContext } from '../../context';
 import Input from '../Form/Input';
 import Invoice from './Invoice';
@@ -19,10 +20,13 @@ const schema = yup
       .number()
       .required('لینک محصول الزامی است.')
       .typeError('فقط عدد وارد کنید.'),
-    description: yup.string().url().required('لینک محصول الزامی است.'),
+    description: yup.string().required('لینک محصول الزامی است.'),
     products: yup.array().of(
       yup.object().shape({
-        link: yup.string().url().required('لینک محصول الزامی است.'),
+        link: yup
+          .string()
+          .url('لینک معتبر وارد کنید.')
+          .required('لینک محصول الزامی است.'),
       })
     ),
   })
@@ -105,7 +109,11 @@ export default function PricingForm() {
               id="subtotal"
               label="مبلغ کل به لیر"
               InputProps={{
-                endAdornment: <InputAdornment position="end">₺</InputAdornment>,
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <LiraIcon />
+                  </InputAdornment>
+                ),
               }}
             />
           </Grid>
