@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import * as yup from 'yup';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -27,6 +27,7 @@ const schema = yup
   .required();
 
 export default function PricingForm() {
+  const form = useRef(null);
   const { order } = useContext(AppContext);
   const dispatch = useContext(AppDispatchContext);
   const [editMode, setEditMode] = useState(true);
@@ -43,6 +44,7 @@ export default function PricingForm() {
   const onSubmit = (data) => {
     dispatch({ type: 'set_order', data });
     setEditMode(false);
+    form.current.submit();
   };
 
   if (!editMode) return <Invoice onEdit={() => setEditMode(true)} />;
@@ -55,7 +57,12 @@ export default function PricingForm() {
         alignItems: 'center',
       }}
     >
-      <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <Box
+        ref={form}
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+      >
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Button
