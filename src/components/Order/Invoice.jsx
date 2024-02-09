@@ -59,7 +59,11 @@ export default function ShippingInvoice({ onEdit }) {
                 <TableCell align="right">{product.size}</TableCell>
               </TableRow>
             ))}
-            <TableRow>
+            <TableRow
+              sx={{
+                '&:last-child td, &:last-child th': { border: 0 },
+              }}
+            >
               <TableCell colSpan={3}>
                 <Typography variant="subtitle2">
                   مبلغ کل سفارش: {numFormat(order.subtotal)} لیر

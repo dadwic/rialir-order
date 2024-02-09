@@ -80,7 +80,7 @@ export default function PricingForm() {
               size="large"
               variant="contained"
               startIcon={<AddIcon />}
-              onClick={() => append({ link: '' })}
+              onClick={() => append({ link: '', size: 'standard' })}
             >
               افزودن محصول جدید به سفارش
             </Button>
