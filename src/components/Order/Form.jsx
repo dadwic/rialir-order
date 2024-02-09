@@ -18,15 +18,23 @@ const schema = yup
   .object({
     subtotal: yup
       .number()
+      .required('مبلغ کل الزامی است.')
+      .typeError('فقط عدد وارد کنید.')
+      .max(100000, 'مبلغ کل سفارش نباید بیشتر از ۱۰۰ هزار لیر باشد.'),
+    description: yup
+      .string()
       .required('لینک محصول الزامی است.')
-      .typeError('فقط عدد وارد کنید.'),
-    description: yup.string().required('لینک محصول الزامی است.'),
+      .max(250, 'توضیحات نباید بیشتر از ۲۵۰ کاراکتر باشد.'),
     products: yup.array().of(
       yup.object().shape({
         link: yup
           .string()
           .url('لینک معتبر وارد کنید.')
           .required('لینک محصول الزامی است.'),
+        variant: yup
+          .string()
+          .required('مشخصات محصول الزامی است.')
+          .max(100, 'مشخصات محصول نباید بیشتر از ۱۰۰ کاراکتر باشد.'),
       })
     ),
   })
@@ -81,26 +89,76 @@ export default function PricingForm() {
             </Button>
           </Grid>
           {fields.map((field, index) => (
-            <Grid item xs={12} key={index}>
-              <Input
-                id={field.id}
-                control={control}
-                name={`products.${index}.link`}
-                label={`لینک محصول ${index + 1}`}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton
-                      edge="end"
-                      color="error"
-                      onClick={() => remove(index)}
-                      disabled={index === 0 && fields.length === 1}
-                    >
-                      <CloseIcon />
-                    </IconButton>
-                  ),
-                }}
-              />
-            </Grid>
+            <React.Fragment key={index}>
+              <Grid item xs={6}>
+                <Input
+                  id={field.id}
+                  control={control}
+                  label="لینک محصول"
+                  name={`products.${index}.link`}
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        edge="end"
+                        color="error"
+                        onClick={() => remove(index)}
+                        disabled={index === 0 && fields.length === 1}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Input
+                  select
+                  control={control}
+                  label="سایز"
+                  name={`products.${index}.size`}
+                  SelectProps={{
+                    native: true,
+                  }}
+                >
+                  <optgroup label="سایز پیش فرض">
+                    <option value="standard">استاندارد</option>
+                  </optgroup>
+                  <optgroup label="سایز های حروفی">
+                    {[
+                      '3XS',
+                      'XXS',
+                      'XS',
+                      'S',
+                      'S-M',
+                      'M',
+                      'L',
+                      'L-XL',
+                      'XL',
+                      'XXL',
+                      'XXL',
+                      '3XL',
+                      '4XL',
+                      '5XL',
+                      '6XL',
+                    ].map((size) => (
+                      <option value={size}>{size}</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="سایز های متفرقه">
+                    <option value="single">یک نفره</option>
+                    <option value="double">دو نفره</option>
+                    <option value="triple">سه نفره</option>
+                  </optgroup>
+                  <optgroup label="سایز های عددی">
+                    {Array.from({ length: 80 }, (_, i) => (36 + i) / 2).map(
+                      (size) => (
+                        <option value={size}>{size}</option>
+                      )
+                    )}
+                  </optgroup>
+                </Input>
+              </Grid>
+            </React.Fragment>
           ))}
           <Grid item xs={12}>
             <Input
@@ -123,6 +181,7 @@ export default function PricingForm() {
               name="description"
               id="description"
               label="توضیحات"
+              helperText="لطفا سایز، رنگ و مشخصات دقیق محصولات را به فارسی اینجا بنویسید."
             />
           </Grid>
         </Grid>
