@@ -31,10 +31,7 @@ const schema = yup
           .string()
           .url('لینک معتبر وارد کنید.')
           .required('لینک محصول الزامی است.'),
-        variant: yup
-          .string()
-          .required('مشخصات محصول الزامی است.')
-          .max(100, 'مشخصات محصول نباید بیشتر از ۱۰۰ کاراکتر باشد.'),
+        size: yup.string().required('مشخصات محصول الزامی است.'),
       })
     ),
   })
@@ -165,6 +162,7 @@ export default function PricingForm() {
               control={control}
               name="subtotal"
               id="subtotal"
+              type="tel"
               label="مبلغ کل به لیر"
               InputProps={{
                 endAdornment: (
@@ -181,7 +179,7 @@ export default function PricingForm() {
               name="description"
               id="description"
               label="توضیحات"
-              helperText="لطفا سایز، رنگ و مشخصات دقیق محصولات را به فارسی اینجا بنویسید."
+              helperText="سایز، رنگ و مشخصات دقیق محصولات را به فارسی بنویسید."
             />
           </Grid>
         </Grid>

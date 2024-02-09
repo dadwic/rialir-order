@@ -29,7 +29,7 @@ export default function ShippingInvoice({ onEdit }) {
         sx={{ mt: 2 }}
         gutterBottom
       >
-        صورتحساب هزینه ارسال
+        پیش فاکتور
       </Typography>
       <Typography variant="subtitle2" textAlign="center" color="text.secondary">
         {moment().zone('+0330').format('dddd jD jMMMM jYYYY - HH:mm')}
@@ -39,8 +39,8 @@ export default function ShippingInvoice({ onEdit }) {
           <TableHead>
             <TableRow>
               <TableCell width={40}>ردیف</TableCell>
-              <TableCell>نام محصول</TableCell>
-              <TableCell align="right">مقدار محصول</TableCell>
+              <TableCell>سایت محصول</TableCell>
+              <TableCell align="right">سایز محصول</TableCell>
             </TableRow>
           </TableHead>
           <TableBody
@@ -54,28 +54,15 @@ export default function ShippingInvoice({ onEdit }) {
               <TableRow key={product.name}>
                 <TableCell>{persianNumber(index + 1)}</TableCell>
                 <TableCell component="th" scope="row">
-                  {product.name}
+                  {new URL(product.link).hostname}
                 </TableCell>
-                <TableCell align="right">
-                  {numFormat(product.weight)} {product.shoe ? 'جفت' : 'گرم'}
-                </TableCell>
+                <TableCell align="right">{product.size}</TableCell>
               </TableRow>
             ))}
             <TableRow>
               <TableCell colSpan={3}>
                 <Typography variant="subtitle2">
-                  مجموع هزینه ارسال: {numFormat(0)} ریال
-                </Typography>
-              </TableCell>
-            </TableRow>
-            <TableRow
-              sx={{
-                '&:last-child td, &:last-child th': { border: 0 },
-              }}
-            >
-              <TableCell colSpan={3}>
-                <Typography variant="subtitle2" color="text.secondary">
-                  مجموع صورتحساب شامل {numFormat(0)} تومان هزینه پیک می باشد.
+                  مبلغ کل سفارش: {numFormat(order.subtotal)} لیر
                 </Typography>
               </TableCell>
             </TableRow>
@@ -114,9 +101,18 @@ export default function ShippingInvoice({ onEdit }) {
         <Typography component="li" fontWeight={700} gutterBottom>
           در علت تراکنش ذکر شود: بابت پرداخت قرض و تادیه دیون
         </Typography>
-        <Typography component="li" align="justify" fontWeight={700}>
-          مشتری گرامی بعد از پرداخت، لطفاً تصویر فیش واریزی را برای پشتیبانی
+        <Typography
+          component="li"
+          align="justify"
+          fontWeight={700}
+          gutterBottom
+        >
+          مشتری گرامی بعد از پرداخت، لطفاً تصویر فیش واریزی را به ربات تلگرام
           ریالیر ارسال کنید.
+        </Typography>
+        <Typography component="li" align="justify" fontWeight={700}>
+          مدت زمان تحویل سفارش: ۴ تا ۶ هفته کاری بعد از تحویل کالا توسط فروشنده
+          به دفتر ریالیر در استانبول
         </Typography>
       </ul>
     </Box>
