@@ -40,6 +40,7 @@ export default function ShippingInvoice({ onEdit }) {
             <TableRow>
               <TableCell width={40}>ردیف</TableCell>
               <TableCell>سایت محصول</TableCell>
+              <TableCell align="right">رنگ محصول</TableCell>
               <TableCell align="right">سایز محصول</TableCell>
             </TableRow>
           </TableHead>
@@ -56,6 +57,7 @@ export default function ShippingInvoice({ onEdit }) {
                 <TableCell component="th" scope="row">
                   {new URL(product.link).hostname}
                 </TableCell>
+                <TableCell align="right">{product.color}</TableCell>
                 <TableCell align="right">{product.size}</TableCell>
               </TableRow>
             ))}

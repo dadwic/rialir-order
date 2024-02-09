@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import CloseIcon from '@mui/icons-material/Close';
@@ -31,7 +32,8 @@ const schema = yup
           .string()
           .url('لینک معتبر وارد کنید.')
           .required('لینک محصول الزامی است.'),
-        size: yup.string().required('مشخصات محصول الزامی است.'),
+        size: yup.string().required('سایز محصول الزامی است.'),
+        color: yup.string().required('رنگ محصول الزامی است.'),
       })
     ),
   })
@@ -80,14 +82,16 @@ export default function PricingForm() {
               size="large"
               variant="contained"
               startIcon={<AddIcon />}
-              onClick={() => append({ link: '', size: 'standard' })}
+              onClick={() =>
+                append({ link: '', size: 'standard', color: 'default' })
+              }
             >
               افزودن محصول جدید به سفارش
             </Button>
           </Grid>
           {fields.map((field, index) => (
             <React.Fragment key={index}>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <Input
                   id={field.id}
                   control={control}
@@ -154,6 +158,49 @@ export default function PricingForm() {
                     )}
                   </optgroup>
                 </Input>
+              </Grid>
+              <Grid item xs={6}>
+                <Input
+                  select
+                  control={control}
+                  label="رنگ"
+                  name={`products.${index}.size`}
+                  SelectProps={{
+                    native: true,
+                  }}
+                >
+                  <option value="default">پیش فرض</option>
+                  {[
+                    { value: 'black', label: 'مشکی' },
+                    { value: 'white', label: 'سفید' },
+                    { value: 'light-blue', label: 'آبی کم رنگ' },
+                    { value: 'blue', label: 'آبی' },
+                    { value: 'navy-blue', label: 'سرمه ای' },
+                    { value: 'red', label: 'قرمز' },
+                    { value: 'crimson', label: 'زرشکی' },
+                    { value: 'green', label: 'سبز' },
+                    { value: 'yellow', label: 'زرد' },
+                    { value: 'pink', label: 'صورتی' },
+                    { value: 'purple', label: 'بنفش' },
+                    { value: 'orange', label: 'پرتغالی' },
+                    { value: 'olive', label: 'زیتونی' },
+                    { value: 'gray', label: 'خاکستری' },
+                    { value: 'gold', label: 'طلایی' },
+                    { value: 'silver', label: 'نقره ای' },
+                    { value: 'chocolate', label: 'شکلاتی' },
+                    { value: 'brown', label: 'قهوه ای' },
+                    { value: 'beige', label: 'بژ' },
+                    { value: 'khaki', label: 'خاکی' },
+                    { value: 'azure', label: 'لاجوردی' },
+                  ].map(({ value, label }, key) => (
+                    <option key={key} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </Input>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.23)' }} />
               </Grid>
             </React.Fragment>
           ))}
