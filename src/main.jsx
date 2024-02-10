@@ -38,6 +38,7 @@ const theme = createTheme({
     secondary: {
       main: '#556cd6',
     },
+    divider: 'rgba(0, 0, 0, 0.23)',
   },
   components: {
     MuiPopover: {

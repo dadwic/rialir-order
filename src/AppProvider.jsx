@@ -8,6 +8,10 @@ export default function AppProvider({ children }) {
       invoiceTotal: '',
       products: [{ link: '', size: 'standard', color: 'default' }],
       description: '',
+      newAddress: false,
+      mobile: '',
+      zipCode: '',
+      address: '',
     },
   });
 

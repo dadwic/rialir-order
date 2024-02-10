@@ -4,16 +4,21 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import Chip from '@mui/material/Chip';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import FormHelperText from '@mui/material/FormHelperText';
 import InputAdornment from '@mui/material/InputAdornment';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import LiraIcon from '@mui/icons-material/CurrencyLira';
 import { AppContext, AppDispatchContext } from '../../context';
+import Checkbox from '../Form/Checkbox';
 import Input from '../Form/Input';
 import Invoice from './Invoice';
+import { persianNumber } from '../../utils';
 
 const schema = yup
   .object({
@@ -24,8 +29,22 @@ const schema = yup
       .max(100000, 'مبلغ کل سفارش نباید بیشتر از ۱۰۰ هزار لیر باشد.'),
     description: yup
       .string()
-      .required('لینک محصول الزامی است.')
-      .max(250, 'توضیحات نباید بیشتر از ۲۵۰ کاراکتر باشد.'),
+      .required('توضیحات سفارش الزامی است.')
+      .min(32, 'توضیحات باید حداقل بیشتر از ۳۲ کاراکتر باشد.')
+      .max(255, 'توضیحات نباید بیشتر از ۲۵۵ کاراکتر باشد.'),
+    mobile: yup
+      .string()
+      .required('شماره موبایل گیرنده الزامی است.')
+      .length(11, 'شماره موبایل شامل ۱۱ رقم می‌باشد.'),
+    zipCode: yup
+      .string()
+      .required('کد پستی گیرنده الزامی است.')
+      .length(10, 'کد پستی شامل ۱۰ رقم می‌باشد.'),
+    address: yup
+      .string()
+      .required('آدرس دقیق الزامی است.')
+      .min(32, 'آدرس باید حداقل بیشتر از ۳۲ کاراکتر باشد.')
+      .max(255, 'آدرس نباید بیشتر از ۲۵۵ کاراکتر باشد.'),
     products: yup.array().of(
       yup.object().shape({
         link: yup
@@ -44,7 +63,7 @@ export default function PricingForm() {
   const { order } = useContext(AppContext);
   const dispatch = useContext(AppDispatchContext);
   const [editMode, setEditMode] = useState(true);
-  const { control, handleSubmit, watch } = useForm({
+  const { control, watch, handleSubmit } = useForm({
     resolver: yupResolver(schema),
     defaultValues: order,
   });
@@ -52,6 +71,7 @@ export default function PricingForm() {
     control,
     name: 'products',
   });
+  const newAddress = watch('newAddress');
 
   const onSubmit = (data) => {
     dispatch({ type: 'set_order', data });
@@ -91,6 +111,16 @@ export default function PricingForm() {
           </Grid>
           {fields.map((field, index) => (
             <React.Fragment key={index}>
+              <Grid item xs={12}>
+                <Divider
+                  sx={{
+                    borderColor: (t) => t.palette.divider,
+                    fontFamily: 'Vazirmatn',
+                  }}
+                >
+                  <Chip label={`محصول شماره ${persianNumber(index + 1)}`} />
+                </Divider>
+              </Grid>
               <Grid item xs={12}>
                 <Input
                   id={field.id}
@@ -199,9 +229,6 @@ export default function PricingForm() {
                   ))}
                 </Input>
               </Grid>
-              <Grid item xs={12}>
-                <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.23)' }} />
-              </Grid>
             </React.Fragment>
           ))}
           <Grid item xs={12}>
@@ -226,16 +253,62 @@ export default function PricingForm() {
               name="description"
               id="description"
               label="توضیحات"
-              helperText="سایز، رنگ و مشخصات دقیق محصولات را به فارسی بنویسید."
+            />
+            <FormHelperText id="description-helper">
+              سایز، رنگ و مشخصات دقیق محصولات را به فارسی بنویسید.
+            </FormHelperText>
+          </Grid>
+          <Grid item xs={12}>
+            <Checkbox
+              control={control}
+              name="newAddress"
+              id="newAddress"
+              label="ارسال سفارش به آدرس شخص دیگر"
             />
           </Grid>
+          {newAddress && (
+            <>
+              <Grid item xs={12}>
+                <Input
+                  control={control}
+                  type="tel"
+                  name="mobile"
+                  id="mobile"
+                  label="شماره موبایل گیرنده"
+                  inputProps={{ maxLength: 11 }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Input
+                  control={control}
+                  type="tel"
+                  name="zipCode"
+                  id="zipCode"
+                  label="کد پستی گیرنده"
+                  inputProps={{ maxLength: 10 }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Input
+                  control={control}
+                  name="address"
+                  id="address"
+                  label="آدرس دقیق تحویل کالا در ایران"
+                />
+              </Grid>
+            </>
+          )}
         </Grid>
+        <Typography variant="body2" color="text.secondary" sx={{ my: 1 }}>
+          لطفا قبل از ثبت سفارش آدرس پستی دقیق خود را در صفحه آدرس ها اضافه
+          کنید.
+        </Typography>
         <Button
           fullWidth
           type="submit"
           size="large"
           variant="contained"
-          sx={{ my: 2 }}
+          sx={{ my: 1 }}
         >
           ثبت سفارش
         </Button>
