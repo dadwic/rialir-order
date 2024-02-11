@@ -84,13 +84,14 @@ export default function PricingForm() {
   const newAddress = watch('newAddress');
 
   const onSubmit = (data) => {
-    console.log(woocommerce_params);
+    console.log(window.woocommerce_params);
+    console.log(window._wpemojiSettings);
     dispatch({ type: 'set_order', data });
     setEditMode(false);
     fetch({
-      url: wpApiSettings.root + 'wp/v2/order',
+      url: window.wpApiSettings.root + 'wp/v2/order',
       method: 'POST',
-      headers: { 'X-WP-Nonce': wpApiSettings.nonce },
+      headers: { 'X-WP-Nonce': window.wpApiSettings.nonce },
       data,
     })
       .then((response) => {
