@@ -84,6 +84,7 @@ export default function PricingForm() {
   const newAddress = watch('newAddress');
 
   const onSubmit = (data) => {
+    console.log(woocommerce_params);
     dispatch({ type: 'set_order', data });
     setEditMode(false);
     fetch({
