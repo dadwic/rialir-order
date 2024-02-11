@@ -83,20 +83,18 @@ export default function PricingForm() {
   });
   const newAddress = watch('newAddress');
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     dispatch({ type: 'set_order', data });
     setEditMode(false);
-    fetch(orderApi.root + 'wp/v2/order', {
+    const response = await fetch(orderApi.root + 'wp/v2/order', {
       method: 'POST',
-      headers: { 'X-WP-Nonce': orderApi.nonce },
-      data,
-    })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+      headers: {
+        'X-WP-Nonce': orderApi.nonce,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    console.log(response.json());
   };
 
   if (!editMode) return <Invoice onEdit={() => setEditMode(true)} />;
