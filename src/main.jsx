@@ -8,6 +8,7 @@ import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import AppProvider from './AppProvider';
 // import Loading from './components/Loading';
+import OrderForm from './components/Order/Form';
 import VazirmatnWoff2 from './fonts/Vazirmatn-Regular.woff2';
 
 // const OrderForm = React.lazy(() => import('./components/Order/Form'));
