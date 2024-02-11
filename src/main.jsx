@@ -12,7 +12,7 @@ import VazirmatnWoff2 from './fonts/Vazirmatn-Regular.woff2';
 
 const OrderForm = React.lazy(() => import('./components/Order/Form'));
 
-const container = document.querySelector('#order-app');
+const container = document.getElementById('order-app');
 const shadowContainer = container.attachShadow({ mode: 'open' });
 const shadowRootElement = document.createElement('div');
 shadowContainer.appendChild(shadowRootElement);
@@ -72,16 +72,16 @@ const theme = createTheme({
 });
 
 createRoot(shadowContainer).render(
-  // <React.StrictMode>
-  <AppProvider>
-    <CacheProvider value={cacheRtl}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <React.Suspense fallback={<Loading />}>
-          <OrderForm />
-        </React.Suspense>
-      </ThemeProvider>
-    </CacheProvider>
-  </AppProvider>
-  // </React.StrictMode>
+  <React.StrictMode>
+    <AppProvider>
+      <CacheProvider value={cacheRtl}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <React.Suspense fallback={<Loading />}>
+            <OrderForm />
+          </React.Suspense>
+        </ThemeProvider>
+      </CacheProvider>
+    </AppProvider>
+  </React.StrictMode>
 );
