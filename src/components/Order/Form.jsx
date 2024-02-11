@@ -14,6 +14,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import LiraIcon from '@mui/icons-material/CurrencyLira';
+import BackspaceIcon from '@mui/icons-material/Backspace';
 import { AppContext, AppDispatchContext } from '../../context';
 import Checkbox from '../Form/Checkbox';
 import Input from '../Form/Input';
@@ -32,19 +33,28 @@ const schema = yup
       .required('توضیحات سفارش الزامی است.')
       .min(32, 'توضیحات باید حداقل بیشتر از ۳۲ کاراکتر باشد.')
       .max(255, 'توضیحات نباید بیشتر از ۲۵۵ کاراکتر باشد.'),
-    mobile: yup
-      .string()
-      .required('شماره موبایل گیرنده الزامی است.')
-      .length(11, 'شماره موبایل شامل ۱۱ رقم می‌باشد.'),
-    zipCode: yup
-      .string()
-      .required('کد پستی گیرنده الزامی است.')
-      .length(10, 'کد پستی شامل ۱۰ رقم می‌باشد.'),
-    address: yup
-      .string()
-      .required('آدرس دقیق الزامی است.')
-      .min(32, 'آدرس باید حداقل بیشتر از ۳۲ کاراکتر باشد.')
-      .max(255, 'آدرس نباید بیشتر از ۲۵۵ کاراکتر باشد.'),
+    mobile: yup.string().when('newAddress', {
+      is: true,
+      then: (schema) =>
+        schema
+          .required('شماره موبایل گیرنده الزامی است.')
+          .length(11, 'شماره موبایل شامل ۱۱ رقم می‌باشد.'),
+    }),
+    zipCode: yup.string().when('newAddress', {
+      is: true,
+      then: (schema) =>
+        schema
+          .required('کد پستی گیرنده الزامی است.')
+          .length(10, 'کد پستی شامل ۱۰ رقم می‌باشد.'),
+    }),
+    address: yup.string().when('newAddress', {
+      is: true,
+      then: (schema) =>
+        schema
+          .required('آدرس دقیق الزامی است.')
+          .min(32, 'آدرس باید حداقل بیشتر از ۳۲ کاراکتر باشد.')
+          .max(255, 'آدرس نباید بیشتر از ۲۵۵ کاراکتر باشد.'),
+    }),
     products: yup.array().of(
       yup.object().shape({
         link: yup
@@ -63,7 +73,7 @@ export default function PricingForm() {
   const { order } = useContext(AppContext);
   const dispatch = useContext(AppDispatchContext);
   const [editMode, setEditMode] = useState(true);
-  const { control, watch, handleSubmit } = useForm({
+  const { control, watch, setValue, handleSubmit } = useForm({
     resolver: yupResolver(schema),
     defaultValues: order,
   });
@@ -76,6 +86,18 @@ export default function PricingForm() {
   const onSubmit = (data) => {
     dispatch({ type: 'set_order', data });
     setEditMode(false);
+    fetch({
+      url: wpApiSettings.root + 'wp/v2/order',
+      method: 'POST',
+      headers: { 'X-WP-Nonce': wpApiSettings.nonce },
+      data,
+    })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   if (!editMode) return <Invoice onEdit={() => setEditMode(true)} />;
@@ -118,6 +140,15 @@ export default function PricingForm() {
                     fontFamily: 'Vazirmatn',
                   }}
                 >
+                  <IconButton
+                    edge="start"
+                    size="small"
+                    color="error"
+                    onClick={() => remove(index)}
+                    disabled={index === 0 && fields.length === 1}
+                  >
+                    <CloseIcon />
+                  </IconButton>
                   <Chip label={`محصول شماره ${persianNumber(index + 1)}`} />
                 </Divider>
               </Grid>
@@ -132,10 +163,11 @@ export default function PricingForm() {
                       <IconButton
                         edge="end"
                         color="error"
-                        onClick={() => remove(index)}
-                        disabled={index === 0 && fields.length === 1}
+                        title="پاک کردن"
+                        sx={{ transform: 'scaleX(-1)' }}
+                        onClick={() => setValue(`products.${index}.link`, '')}
                       >
-                        <CloseIcon />
+                        <BackspaceIcon />
                       </IconButton>
                     ),
                   }}
