@@ -83,6 +83,8 @@ export default function PricingForm() {
   });
   const newAddress = watch('newAddress');
 
+  console.log({ orderApi });
+
   const onSubmit = (data) => {
     dispatch({ type: 'set_order', data });
     setEditMode(false);
