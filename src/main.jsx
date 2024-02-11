@@ -7,10 +7,10 @@ import { prefixer } from 'stylis';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import AppProvider from './AppProvider';
-import Loading from './components/Loading';
+// import Loading from './components/Loading';
 import VazirmatnWoff2 from './fonts/Vazirmatn-Regular.woff2';
 
-const OrderForm = React.lazy(() => import('./components/Order/Form'));
+// const OrderForm = React.lazy(() => import('./components/Order/Form'));
 
 const container = document.querySelector('#order-app');
 const shadowContainer = container.attachShadow({ mode: 'open' });
@@ -77,9 +77,9 @@ createRoot(shadowContainer).render(
       <CacheProvider value={cacheRtl}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <React.Suspense fallback={<Loading />}>
-            <OrderForm />
-          </React.Suspense>
+          {/* <React.Suspense fallback={<Loading />}> */}
+          <OrderForm />
+          {/* </React.Suspense> */}
         </ThemeProvider>
       </CacheProvider>
     </AppProvider>
