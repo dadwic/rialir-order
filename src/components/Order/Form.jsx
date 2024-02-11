@@ -83,13 +83,10 @@ export default function PricingForm() {
   });
   const newAddress = watch('newAddress');
 
-  console.log({ orderApi });
-
   const onSubmit = (data) => {
     dispatch({ type: 'set_order', data });
     setEditMode(false);
-    fetch({
-      url: orderApi.root + 'wp/v2/order',
+    fetch(orderApi.root + 'wp/v2/order', {
       method: 'POST',
       headers: { 'X-WP-Nonce': orderApi.nonce },
       data,
