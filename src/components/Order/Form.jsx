@@ -1,6 +1,7 @@
 import React, { useContext, useRef, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useSnackbar } from 'notistack';
 import * as yup from 'yup';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -31,29 +32,27 @@ const schema = yup
     description: yup
       .string()
       .required('توضیحات سفارش الزامی است.')
-      .min(32, 'توضیحات باید حداقل بیشتر از ۳۲ کاراکتر باشد.')
-      .max(255, 'توضیحات نباید بیشتر از ۲۵۵ کاراکتر باشد.'),
-    mobile: yup.string().when('newAddress', {
+      .max(200, 'توضیحات نباید بیشتر از ۲۰۰ کاراکتر باشد.'),
+    mobile: yup.string().when('new_address', {
       is: true,
       then: (schema) =>
         schema
           .required('شماره موبایل گیرنده الزامی است.')
           .length(11, 'شماره موبایل شامل ۱۱ رقم می‌باشد.'),
     }),
-    zipCode: yup.string().when('newAddress', {
+    zipCode: yup.string().when('new_address', {
       is: true,
       then: (schema) =>
         schema
           .required('کد پستی گیرنده الزامی است.')
           .length(10, 'کد پستی شامل ۱۰ رقم می‌باشد.'),
     }),
-    address: yup.string().when('newAddress', {
+    address: yup.string().when('new_address', {
       is: true,
       then: (schema) =>
         schema
           .required('آدرس دقیق الزامی است.')
-          .min(32, 'آدرس باید حداقل بیشتر از ۳۲ کاراکتر باشد.')
-          .max(255, 'آدرس نباید بیشتر از ۲۵۵ کاراکتر باشد.'),
+          .max(200, 'آدرس نباید بیشتر از ۲۰۰ کاراکتر باشد.'),
     }),
     products: yup.array().of(
       yup.object().shape({
@@ -62,11 +61,10 @@ const schema = yup
           .url('لینک معتبر وارد کنید.')
           .required('لینک محصول الزامی است.'),
         size: yup.string().required('سایز محصول الزامی است.'),
-        desc: yup
+        description: yup
           .string()
           .required('توضیحات محصول الزامی است.')
-          .min(8, 'توضیحات باید حداقل بیشتر از ۸ کاراکتر باشد.')
-          .max(16, 'توضیحات نباید بیشتر از ۱۶ کاراکتر باشد.'),
+          .max(32, 'توضیحات نباید بیشتر از ۳۲ کاراکتر باشد.'),
       })
     ),
   })
@@ -77,6 +75,7 @@ export default function PricingForm() {
   const { order } = useContext(AppContext);
   const dispatch = useContext(AppDispatchContext);
   const [editMode, setEditMode] = useState(true);
+  const { enqueueSnackbar } = useSnackbar();
   const { control, watch, setValue, handleSubmit } = useForm({
     resolver: yupResolver(schema),
     defaultValues: order,
@@ -85,23 +84,37 @@ export default function PricingForm() {
     control,
     name: 'products',
   });
-  const newAddress = watch('newAddress');
+  const new_address = watch('new_address');
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     dispatch({ type: 'set_order', data });
     setEditMode(false);
-    const response = await fetch(orderApi.root + 'wp/v2/order', {
-      method: 'POST',
-      headers: {
-        'X-WP-Nonce': orderApi.nonce,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    console.log(response.json());
   };
 
-  if (!editMode) return <Invoice onEdit={() => setEditMode(true)} />;
+  const createOrder = async (data) => {
+    try {
+      const response = await fetch(orderApi.root + 'wp/v2/order', {
+        method: 'POST',
+        headers: {
+          'X-WP-Nonce': orderApi.nonce,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      console.log(response.json());
+      enqueueSnackbar('Successfully created.', {
+        variant: 'success',
+      });
+    } catch (err) {
+      enqueueSnackbar(err.message, {
+        variant: 'error',
+      });
+    }
+  };
+
+  if (!editMode) {
+    return <Invoice onEdit={() => setEditMode(true)} onSubmit={createOrder} />;
+  }
 
   return (
     <Box
@@ -126,7 +139,7 @@ export default function PricingForm() {
               variant="contained"
               startIcon={<AddIcon />}
               onClick={() =>
-                append({ link: '', size: 'standard', color: 'default' })
+                append({ link: '', size: 'standard', description: '' })
               }
             >
               افزودن محصول جدید به سفارش
@@ -212,7 +225,6 @@ export default function PricingForm() {
                   <optgroup label="سایز های متفرقه">
                     <option value="single">یک نفره</option>
                     <option value="double">دو نفره</option>
-                    <option value="triple">سه نفره</option>
                   </optgroup>
                   <optgroup label="سایز های عددی">
                     {Array.from({ length: 80 }, (_, i) => (36 + i) / 2).map(
@@ -226,9 +238,9 @@ export default function PricingForm() {
               <Grid item xs={6}>
                 <Input
                   control={control}
-                  label="توضیحات"
-                  id={`products.${index}.desc`}
-                  name={`products.${index}.desc`}
+                  label="توضیحات محصول"
+                  id={`products.${index}.description`}
+                  name={`products.${index}.description`}
                 />
               </Grid>
             </React.Fragment>
@@ -263,12 +275,12 @@ export default function PricingForm() {
           <Grid item xs={12}>
             <Checkbox
               control={control}
-              name="newAddress"
-              id="newAddress"
+              name="new_address"
+              id="new_address"
               label="ارسال سفارش به آدرس شخص دیگر"
             />
           </Grid>
-          {newAddress && (
+          {new_address && (
             <>
               <Grid item xs={12}>
                 <Input

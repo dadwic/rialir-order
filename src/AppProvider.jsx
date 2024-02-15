@@ -6,7 +6,7 @@ export default function AppProvider({ children }) {
     order: {
       subtotal: '',
       invoiceTotal: '',
-      products: [{ link: '', size: 'standard', desc: '' }],
+      products: [{ link: '', size: 'standard', description: '' }],
       description: '',
       newAddress: false,
       mobile: '',

@@ -2,7 +2,9 @@ import React, { useContext } from 'react';
 import moment from 'moment-jalaali';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import Table from '@mui/material/Table';
@@ -17,23 +19,37 @@ import Logo from '../Logo';
 
 moment.loadPersian({ usePersianDigits: true, dialect: 'persian-modern' });
 
-export default function ShippingInvoice({ onEdit }) {
+export default function ShippingInvoice({ onEdit, onSubmit }) {
   const { order } = useContext(AppContext);
 
   return (
     <Box>
-      <Typography
-        variant="h6"
-        textAlign="center"
-        fontWeight={700}
-        sx={{ mt: 2 }}
-        gutterBottom
-      >
-        پیش فاکتور
-      </Typography>
-      <Typography variant="subtitle2" textAlign="center" color="text.secondary">
-        {moment().zone('+0330').format('dddd jD jMMMM jYYYY - HH:mm')}
-      </Typography>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Button onClick={onEdit} variant="contained">
+          ویرایش سفارش
+        </Button>
+        <div>
+          <Typography
+            variant="h6"
+            textAlign="center"
+            fontWeight={700}
+            sx={{ mt: 2 }}
+            gutterBottom
+          >
+            پیش فاکتور
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            textAlign="center"
+            color="text.secondary"
+          >
+            {moment().zone('+0330').format('dddd jD jMMMM jYYYY - HH:mm')}
+          </Typography>
+        </div>
+        <Button onClick={onSubmit} variant="contained">
+          ثبت سفارش
+        </Button>
+      </Stack>
       <TableContainer component={Paper} variant="outlined" sx={{ mt: 2 }}>
         <Table size="small">
           <TableHead>
