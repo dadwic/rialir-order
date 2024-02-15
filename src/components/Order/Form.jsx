@@ -91,7 +91,7 @@ export default function PricingForm() {
     setEditMode(false);
   };
 
-  const createOrder = async (data) => {
+  const createOrder = async () => {
     try {
       const response = await fetch(orderApi.root + 'wp/v2/order', {
         method: 'POST',
@@ -99,7 +99,7 @@ export default function PricingForm() {
           'X-WP-Nonce': orderApi.nonce,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(order),
       });
       console.log(response.json());
       enqueueSnackbar('Successfully created.', {
