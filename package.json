@@ -12,6 +12,7 @@
     "@emotion/styled": "latest",
     "@hookform/resolvers": "^3.3.4",
     "@mui/icons-material": "^5.15.7",
+    "@mui/lab": "^5.0.0-alpha.165",
     "@mui/material": "latest",
     "axios": "^1.6.7",
     "moment-jalaali": "^0.10.0",

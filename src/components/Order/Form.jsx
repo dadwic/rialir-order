@@ -1,7 +1,6 @@
 import React, { useContext, useRef, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useSnackbar } from 'notistack';
 import * as yup from 'yup';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -40,7 +39,7 @@ const schema = yup
           .required('شماره موبایل گیرنده الزامی است.')
           .length(11, 'شماره موبایل شامل ۱۱ رقم می‌باشد.'),
     }),
-    zipCode: yup.string().when('new_address', {
+    postcode: yup.string().when('new_address', {
       is: true,
       then: (schema) =>
         schema
@@ -75,7 +74,6 @@ export default function PricingForm() {
   const { order } = useContext(AppContext);
   const dispatch = useContext(AppDispatchContext);
   const [editMode, setEditMode] = useState(true);
-  const { enqueueSnackbar } = useSnackbar();
   const { control, watch, setValue, handleSubmit } = useForm({
     resolver: yupResolver(schema),
     defaultValues: order,
@@ -93,28 +91,32 @@ export default function PricingForm() {
 
   const createOrder = async () => {
     try {
-      const response = await fetch(orderApi.root + 'wp/v2/order', {
+      dispatch({ type: 'loading' });
+      // const response = await fetch(orderApi.root + 'wp/v2/order', {
+      const res = await fetch('https://www.rialir.com/wp-json/wp/v2/order', {
         method: 'POST',
         headers: {
-          'X-WP-Nonce': orderApi.nonce,
+          // 'X-WP-Nonce': orderApi.nonce,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(order),
       });
-      console.log(response.json());
-      enqueueSnackbar('Successfully created.', {
-        variant: 'success',
-      });
-    } catch (err) {
-      enqueueSnackbar(err.message, {
-        variant: 'error',
-      });
+      const { message } = await res.json();
+      if (res.ok) {
+        dispatch({
+          type: 'set_success',
+          message: 'سفارش شما با موفقیت ثبت شد.',
+        });
+      } else {
+        dispatch({ type: 'set_error', message });
+      }
+    } catch ({ message }) {
+      dispatch({ type: 'set_error', message });
     }
   };
 
-  if (!editMode) {
+  if (!editMode)
     return <Invoice onEdit={() => setEditMode(true)} onSubmit={createOrder} />;
-  }
 
   return (
     <Box
@@ -296,8 +298,8 @@ export default function PricingForm() {
                 <Input
                   control={control}
                   type="tel"
-                  name="zipCode"
-                  id="zipCode"
+                  name="postcode"
+                  id="postcode"
                   label="کد پستی گیرنده"
                   inputProps={{ maxLength: 10 }}
                 />

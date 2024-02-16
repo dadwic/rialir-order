@@ -6,13 +6,17 @@ import Stack from '@mui/material/Stack';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
 import Table from '@mui/material/Table';
+import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
+import TableContainer from '@mui/material/TableContainer';
+import Typography from '@mui/material/Typography';
+import LoadingButton from '@mui/lab/LoadingButton';
+import CheckIcon from '@mui/icons-material/Check';
+import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import { numFormat, persianNumber } from '../../utils';
 import { AppContext } from '../../context';
 import Logo from '../Logo';
@@ -20,14 +24,14 @@ import Logo from '../Logo';
 moment.loadPersian({ usePersianDigits: true, dialect: 'persian-modern' });
 
 export default function ShippingInvoice({ onEdit, onSubmit }) {
-  const { order } = useContext(AppContext);
+  const { order, loading, error, success } = useContext(AppContext);
 
   return (
     <Box>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Button onClick={onEdit} variant="contained">
+        <LoadingButton loading={loading} onClick={onEdit} variant="contained">
           ویرایش سفارش
-        </Button>
+        </LoadingButton>
         <div>
           <Typography
             variant="h6"
@@ -46,10 +50,20 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
             {moment().zone('+0330').format('dddd jD jMMMM jYYYY - HH:mm')}
           </Typography>
         </div>
-        <Button onClick={onSubmit} variant="contained">
+        <LoadingButton loading={loading} onClick={onSubmit} variant="contained">
           ثبت سفارش
-        </Button>
+        </LoadingButton>
       </Stack>
+      {Boolean(success) && (
+        <Alert icon={<CheckIcon />} severity="success">
+          {success}
+        </Alert>
+      )}
+      {Boolean(error) && (
+        <Alert icon={<ErrorIcon />} severity="error">
+          {error}
+        </Alert>
+      )}
       <TableContainer component={Paper} variant="outlined" sx={{ mt: 2 }}>
         <Table size="small">
           <TableHead>
