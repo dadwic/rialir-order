@@ -36,7 +36,8 @@ const schema = yup
       .number()
       .required('مبلغ کل الزامی است.')
       .typeError('فقط عدد وارد کنید.')
-      .max(100000, 'مبلغ کل سفارش نباید بیشتر از ۱۰۰ هزار لیر باشد.'),
+      .min(50, 'مبلغ کل باید بیشتر از ۵۰ لیر باشد.')
+      .max(100000, 'مبلغ کل نباید بیشتر از ۱۰۰ هزار لیر باشد.'),
     description: yup
       .string()
       .required('توضیحات سفارش الزامی است.')
@@ -71,7 +72,6 @@ const schema = yup
         size: yup.string().required('سایز محصول الزامی است.'),
         description: yup
           .string()
-          .required('توضیحات محصول الزامی است.')
           .max(32, 'توضیحات نباید بیشتر از ۳۲ کاراکتر باشد.'),
       })
     ),
@@ -287,6 +287,7 @@ export default function PricingForm() {
               </Grid>
               <Grid item xs={6}>
                 <Input
+                  required={false}
                   control={control}
                   label="توضیحات محصول"
                   id={`products.${index}.description`}
