@@ -15,7 +15,6 @@ import TableContainer from '@mui/material/TableContainer';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
-import CheckIcon from '@mui/icons-material/Check';
 import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { numFormat, persianNumber, tryFormat } from '../../utils';
@@ -196,13 +195,6 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
       >
         ثبت سفارش
       </LoadingButton>
-      {success && (
-        <Alert icon={<CheckIcon />} severity="success">
-          مشتری گرامی، سفارش شما ثبت شد. با تشکر
-          <br />
-          بعد از پرداخت تصویر فیش واریزی را به تلگرام ریالیر ارسال کنید.
-        </Alert>
-      )}
       {Boolean(error) && (
         <Alert icon={<ErrorIcon />} severity="error">
           {error}

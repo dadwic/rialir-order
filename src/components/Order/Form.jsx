@@ -8,6 +8,7 @@ import React, {
 import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import Alert from '@mui/lab/Alert';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Chip from '@mui/material/Chip';
@@ -20,14 +21,15 @@ import InputAdornment from '@mui/material/InputAdornment';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
+import CheckIcon from '@mui/icons-material/Check';
 import LiraIcon from '@mui/icons-material/CurrencyLira';
 import BackspaceIcon from '@mui/icons-material/Backspace';
 import { AppContext, AppDispatchContext } from '../../context';
+import { persianNumber } from '../../utils';
 import NumericFormat from '../Form/NumericFormat';
 import Checkbox from '../Form/Checkbox';
 import Input from '../Form/Input';
 import Invoice from './Invoice';
-import { persianNumber } from '../../utils';
 
 const schema = yup
   .object({
@@ -79,7 +81,7 @@ const schema = yup
 
 export default function PricingForm() {
   const form = useRef(null);
-  const { order, pricing, loading } = useContext(AppContext);
+  const { order, pricing, loading, success } = useContext(AppContext);
   const dispatch = useContext(AppDispatchContext);
   const [editMode, setEditMode] = useState(true);
   const { control, watch, setValue, handleSubmit } = useForm({
@@ -133,6 +135,7 @@ export default function PricingForm() {
       );
       const { message } = await res.json();
       if (res.ok) {
+        setEditMode(true);
         dispatch({ type: 'success' });
       } else {
         dispatch({ type: 'set_error', message });
@@ -162,20 +165,30 @@ export default function PricingForm() {
       >
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography
-              variant="body2"
-              color="error"
-              align="center"
-              fontWeight={700}
-              sx={{ mb: 1 }}
-            >
-              قبل از ثبت سفارش، آدرس پستی خود را در صفحه{' '}
-              <a href="https://www.rialir.com/account/edit-address/">آدرس ها</a>{' '}
-              ثبت کنید.
-            </Typography>
+            {success ? (
+              <Alert icon={<CheckIcon />} severity="success">
+                مشتری گرامی، سفارش شما ثبت شد. با تشکر
+                <br />
+                بعد از پرداخت تصویر فیش واریزی را به تلگرام ریالیر ارسال کنید.
+              </Alert>
+            ) : (
+              <Typography
+                variant="body2"
+                color="error"
+                align="center"
+                fontWeight={700}
+              >
+                قبل از ثبت سفارش، آدرس پستی خود را در صفحه{' '}
+                <a href="https://www.rialir.com/account/edit-address/">
+                  آدرس ها
+                </a>{' '}
+                ثبت کنید.
+              </Typography>
+            )}
             <Button
               fullWidth
               size="large"
+              sx={{ mt: 2 }}
               variant="contained"
               startIcon={<AddIcon />}
               onClick={() =>
