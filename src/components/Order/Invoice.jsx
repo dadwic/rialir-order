@@ -187,6 +187,7 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
       <LoadingButton
         fullWidth
         loading={loading}
+        disabled={success}
         onClick={onSubmit}
         size="large"
         variant="contained"

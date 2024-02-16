@@ -1,30 +1,31 @@
 import React, { useReducer } from 'react';
 import { AppContext, AppDispatchContext } from './context';
 
-export default function AppProvider({ children }) {
-  const [store, dispatch] = useReducer(appReducer, {
-    error: '',
-    success: false,
-    loading: false,
-    pricing: {
-      try: '0',
-      fee: '200',
-      discountVal: '',
-      discount: false,
-      date: null,
-    },
-    order: {
-      subtotal: '',
-      total: '',
-      products: [{ link: '', size: 'standard', description: '' }],
-      description: '',
-      newAddress: false,
-      mobile: '',
-      zipCode: '',
-      address: '',
-    },
-  });
+const initialState = {
+  error: '',
+  success: false,
+  loading: false,
+  pricing: {
+    try: '0',
+    fee: '200',
+    discountVal: '',
+    discount: false,
+    date: null,
+  },
+  order: {
+    subtotal: '',
+    total: '',
+    products: [{ link: '', size: 'standard', description: '' }],
+    description: '',
+    newAddress: false,
+    mobile: '',
+    zipCode: '',
+    address: '',
+  },
+};
 
+export default function AppProvider({ children }) {
+  const [store, dispatch] = useReducer(appReducer, initialState);
   return (
     <AppContext.Provider value={store}>
       <AppDispatchContext.Provider value={dispatch}>
@@ -36,6 +37,9 @@ export default function AppProvider({ children }) {
 
 function appReducer(data, action) {
   switch (action.type) {
+    case 'reset': {
+      return initialState;
+    }
     case 'set_order': {
       return { ...data, order: action.data };
     }
@@ -46,7 +50,12 @@ function appReducer(data, action) {
       return { ...data, loading: true, success: false, error: '' };
     }
     case 'success': {
-      return { ...data, success: true, loading: false, error: '' };
+      return {
+        ...initialState,
+        success: true,
+        loading: false,
+        error: '',
+      };
     }
     case 'set_error': {
       return { ...data, error: action.message, success: false, loading: false };
