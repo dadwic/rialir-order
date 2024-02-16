@@ -92,11 +92,10 @@ export default function PricingForm() {
   const createOrder = async () => {
     try {
       dispatch({ type: 'loading' });
-      // const response = await fetch(orderApi.root + 'wp/v2/order', {
-      const res = await fetch('https://www.rialir.com/wp-json/wp/v2/order', {
+      const res = await fetch(`${orderApi.root}wp/v2/order`, {
         method: 'POST',
         headers: {
-          // 'X-WP-Nonce': orderApi.nonce,
+          'X-WP-Nonce': orderApi.nonce,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(order),
@@ -135,6 +134,11 @@ export default function PricingForm() {
       >
         <Grid container spacing={2}>
           <Grid item xs={12}>
+            <Typography variant="body2" color="error" sx={{ mb: 1 }}>
+              قبل از ثبت سفارش، آدرس پستی خود را در صفحه{' '}
+              <a href="https://www.rialir.com/account/edit-address/">آدرس‌ها</a>{' '}
+              ثبت کنید.
+            </Typography>
             <Button
               fullWidth
               size="large"
@@ -315,9 +319,6 @@ export default function PricingForm() {
             </>
           )}
         </Grid>
-        <Typography variant="body2" color="text.secondary" sx={{ my: 1 }}>
-          قبل از ثبت سفارش، آدرس پستی خود را در صفحه آدرس‌ها ثبت کنید.
-        </Typography>
         <Button
           fullWidth
           type="submit"
