@@ -16,7 +16,6 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import FormHelperText from '@mui/material/FormHelperText';
 import InputAdornment from '@mui/material/InputAdornment';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -318,15 +317,14 @@ export default function PricingForm() {
           </Grid>
           <Grid item xs={12}>
             <Input
+              multiline
+              maxRows={4}
               control={control}
               name="description"
               id="description"
               label="توضیحات"
-              placeholder="جزئیات بیشتری اضافه کنید..."
+              placeholder="جزئیات دقیق سفارش را به فارسی بنویسید."
             />
-            <FormHelperText id="description-helper">
-              جزئیات دقیق سفارش را به فارسی بنویسید.
-            </FormHelperText>
           </Grid>
           <Grid item xs={12}>
             <Checkbox
