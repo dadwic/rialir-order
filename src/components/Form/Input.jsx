@@ -10,6 +10,7 @@ export default function Input({ control, name, onPaste, ...props }) {
       render={({ field, fieldState: { error } }) => (
         <TextField
           {...field}
+          required
           fullWidth
           error={Boolean(error)}
           helperText={error?.message}

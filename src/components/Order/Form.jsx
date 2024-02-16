@@ -1,4 +1,10 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, {
+  useContext,
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -11,11 +17,13 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import FormHelperText from '@mui/material/FormHelperText';
 import InputAdornment from '@mui/material/InputAdornment';
+import LoadingButton from '@mui/lab/LoadingButton';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import LiraIcon from '@mui/icons-material/CurrencyLira';
 import BackspaceIcon from '@mui/icons-material/Backspace';
 import { AppContext, AppDispatchContext } from '../../context';
+import NumericFormat from '../Form/NumericFormat';
 import Checkbox from '../Form/Checkbox';
 import Input from '../Form/Input';
 import Invoice from './Invoice';
@@ -71,7 +79,7 @@ const schema = yup
 
 export default function PricingForm() {
   const form = useRef(null);
-  const { order } = useContext(AppContext);
+  const { order, pricing, loading } = useContext(AppContext);
   const dispatch = useContext(AppDispatchContext);
   const [editMode, setEditMode] = useState(true);
   const { control, watch, setValue, handleSubmit } = useForm({
@@ -84,28 +92,48 @@ export default function PricingForm() {
   });
   const new_address = watch('new_address');
 
-  const onSubmit = (data) => {
+  const updateRate = useCallback(async () => {
+    dispatch({ type: 'loading' });
+    // Update TRY price
+    const res = await fetch(`${orderApi.root}${orderApi.versionString}pricing`);
+    const data = await res.json();
+    dispatch({ type: 'set_pricing', data });
+  });
+
+  useEffect(() => {
+    updateRate();
+  }, []);
+
+  const onSubmit = async (form) => {
+    await updateRate();
+    const subtotal = parseFloat(form.subtotal);
+    const fee = parseInt(pricing.fee);
+    const rate = parseInt(pricing.try) + fee;
+    // Convert toman to rial
+    const total = rate * subtotal * 10;
+    const data = { ...form, total };
     dispatch({ type: 'set_order', data });
     setEditMode(false);
   };
 
   const createOrder = async () => {
     try {
+      updateRate();
       dispatch({ type: 'loading' });
-      const res = await fetch(`${orderApi.root}wp/v2/order`, {
-        method: 'POST',
-        headers: {
-          'X-WP-Nonce': orderApi.nonce,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(order),
-      });
+      const res = await fetch(
+        `${orderApi.root}${orderApi.versionString}order`,
+        {
+          method: 'POST',
+          headers: {
+            'X-WP-Nonce': orderApi.nonce,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(order),
+        }
+      );
       const { message } = await res.json();
       if (res.ok) {
-        dispatch({
-          type: 'set_success',
-          message: 'سفارش شما با موفقیت ثبت شد.',
-        });
+        dispatch({ type: 'success' });
       } else {
         dispatch({ type: 'set_error', message });
       }
@@ -134,9 +162,15 @@ export default function PricingForm() {
       >
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography variant="body2" color="error" sx={{ mb: 1 }}>
+            <Typography
+              variant="body2"
+              color="error"
+              align="center"
+              fontWeight={700}
+              sx={{ mb: 1 }}
+            >
               قبل از ثبت سفارش، آدرس پستی خود را در صفحه{' '}
-              <a href="https://www.rialir.com/account/edit-address/">آدرس‌ها</a>{' '}
+              <a href="https://www.rialir.com/account/edit-address/">آدرس ها</a>{' '}
               ثبت کنید.
             </Typography>
             <Button
@@ -247,6 +281,7 @@ export default function PricingForm() {
                   label="توضیحات محصول"
                   id={`products.${index}.description`}
                   name={`products.${index}.description`}
+                  placeholder="جزئیات بیشتری اضافه کنید..."
                 />
               </Grid>
             </React.Fragment>
@@ -259,6 +294,7 @@ export default function PricingForm() {
               type="tel"
               label="مبلغ کل به لیر"
               InputProps={{
+                inputComponent: NumericFormat,
                 endAdornment: (
                   <InputAdornment position="end">
                     <LiraIcon />
@@ -275,7 +311,7 @@ export default function PricingForm() {
               label="توضیحات"
             />
             <FormHelperText id="description-helper">
-              سایز، رنگ و مشخصات دقیق محصولات را به فارسی بنویسید.
+              جزئیات دقیق سفارش را به فارسی بنویسید.
             </FormHelperText>
           </Grid>
           <Grid item xs={12}>
@@ -319,15 +355,16 @@ export default function PricingForm() {
             </>
           )}
         </Grid>
-        <Button
+        <LoadingButton
           fullWidth
           type="submit"
           size="large"
           variant="contained"
+          loading={loading}
           sx={{ my: 1 }}
         >
           ثبت سفارش
-        </Button>
+        </LoadingButton>
       </Box>
     </Box>
   );

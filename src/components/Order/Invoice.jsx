@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Alert from '@mui/material/Alert';
 import Table from '@mui/material/Table';
@@ -13,25 +12,27 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableContainer from '@mui/material/TableContainer';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CheckIcon from '@mui/icons-material/Check';
 import ErrorIcon from '@mui/icons-material/ErrorOutline';
-import { numFormat, persianNumber } from '../../utils';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { numFormat, persianNumber, tryFormat } from '../../utils';
 import { AppContext } from '../../context';
 import Logo from '../Logo';
 
 moment.loadPersian({ usePersianDigits: true, dialect: 'persian-modern' });
 
 export default function ShippingInvoice({ onEdit, onSubmit }) {
-  const { order, loading, error, success } = useContext(AppContext);
+  const { order, pricing, loading, error, success } = useContext(AppContext);
+  const incDsc = pricing.discount;
+  const fee = parseInt(pricing.fee);
 
   return (
     <Box>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <LoadingButton loading={loading} onClick={onEdit} variant="contained">
-          ویرایش سفارش
-        </LoadingButton>
+        <div />
         <div>
           <Typography
             variant="h6"
@@ -50,28 +51,22 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
             {moment().zone('+0330').format('dddd jD jMMMM jYYYY - HH:mm')}
           </Typography>
         </div>
-        <LoadingButton loading={loading} onClick={onSubmit} variant="contained">
-          ثبت سفارش
-        </LoadingButton>
+        <IconButton
+          onClick={onEdit}
+          disabled={loading}
+          size="large"
+          color="primary"
+        >
+          <ArrowBackIcon />
+        </IconButton>
       </Stack>
-      {Boolean(success) && (
-        <Alert icon={<CheckIcon />} severity="success">
-          {success}
-        </Alert>
-      )}
-      {Boolean(error) && (
-        <Alert icon={<ErrorIcon />} severity="error">
-          {error}
-        </Alert>
-      )}
       <TableContainer component={Paper} variant="outlined" sx={{ mt: 2 }}>
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell width={40}>ردیف</TableCell>
-              <TableCell>سایت محصول</TableCell>
-              <TableCell align="right">رنگ محصول</TableCell>
-              <TableCell align="right">سایز محصول</TableCell>
+              <TableCell align="center">قیمت لحظه ای لیر</TableCell>
+              <TableCell align="center">کارمزد خرید</TableCell>
+              <TableCell align="center">قابل پرداخت</TableCell>
             </TableRow>
           </TableHead>
           <TableBody
@@ -81,27 +76,86 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
               },
             }}
           >
-            {order.products.map((product, index) => (
-              <TableRow key={product.name}>
-                <TableCell>{persianNumber(index + 1)}</TableCell>
-                <TableCell component="th" scope="row">
-                  {new URL(product.link).hostname}
-                </TableCell>
-                <TableCell align="right">{product.color}</TableCell>
-                <TableCell align="right">{product.size}</TableCell>
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableCell
+                align="center"
+                sx={{
+                  borderRight: '1px solid #e0e0e0',
+                }}
+              >
+                <Typography variant="subtitle2">
+                  {numFormat(pricing.try)} تومان
+                </Typography>
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{ borderRight: '1px solid #e0e0e0' }}
+              >
+                <Typography variant="subtitle2">
+                  {persianNumber(incDsc ? fee * 0.75 : fee)} تومان
+                </Typography>
+              </TableCell>
+              <TableCell align="center">
+                <Typography variant="subtitle2" fontWeight={700}>
+                  {numFormat(order.total)} ریال
+                </Typography>
+              </TableCell>
+            </TableRow>
             <TableRow
               sx={{
                 '&:last-child td, &:last-child th': { border: 0 },
               }}
             >
-              <TableCell colSpan={3}>
+              <TableCell colSpan={incDsc ? 2 : 3}>
                 <Typography variant="subtitle2">
-                  مبلغ کل سفارش: {numFormat(order.subtotal)} لیر
+                  قیمت کالاها: {tryFormat(order.subtotal)} لیر
+                </Typography>
+              </TableCell>
+              {incDsc && (
+                <TableCell sx={{ borderLeft: '1px solid #e0e0e0', px: 1 }}>
+                  <Typography variant="subtitle2">
+                    تخفیف: {numFormat(pricing.discountVal)} تومان
+                  </Typography>
+                </TableCell>
+              )}
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={3}>
+                <Typography variant="subtitle2" color="text.secondary">
+                  تاریخ بروزرسانی‌ قیمت لیر:&nbsp;
+                  {moment(pricing.date || new Date().getTime())
+                    .zone('+0330')
+                    .format('jYYYY/jMM/jDD - HH:mm:ss')}
                 </Typography>
               </TableCell>
             </TableRow>
+          </TableBody>
+        </Table>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>لینک محصول</TableCell>
+              <TableCell align="center">سایز محصول</TableCell>
+              <TableCell align="right">توضیحات</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody
+            sx={{
+              'tr:nth-of-type(odd)': {
+                backgroundColor: (theme) => theme.palette.action.hover,
+              },
+              '&:last-child td, &:last-child th': { border: 0 },
+            }}
+          >
+            {order.products.map((product, key) => (
+              <TableRow key={key}>
+                <TableCell component="th" scope="row">
+                  {new URL(product.link).hostname}
+                </TableCell>
+                <TableCell align="center">{product.size}</TableCell>
+                <TableCell align="right">{product.description}</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -110,8 +164,8 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
           <Typography variant="h6" gutterBottom>
             مشخصات خریدار
           </Typography>
-          <Typography gutterBottom>-</Typography>
-          <Typography>-</Typography>
+          <Typography gutterBottom>{orderApi?.full_name || '-'}</Typography>
+          <Typography>{orderApi?.phone_number || '-'}</Typography>
         </Grid>
         <Divider flexItem orientation="vertical">
           <Logo />
@@ -129,26 +183,41 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
           <Typography align="center">بنام مهرداد مهرعلیان</Typography>
         </Grid>
       </Grid>
-      <Divider sx={{ mb: 2 }} />
+      <Divider />
+      <LoadingButton
+        fullWidth
+        loading={loading}
+        onClick={onSubmit}
+        size="large"
+        variant="contained"
+        sx={{ my: 2 }}
+      >
+        ثبت سفارش
+      </LoadingButton>
+      {success && (
+        <Alert icon={<CheckIcon />} severity="success">
+          مشتری گرامی، سفارش شما ثبت شد. با تشکر
+          <br />
+          بعد از پرداخت تصویر فیش واریزی را به تلگرام ریالیر ارسال کنید.
+        </Alert>
+      )}
+      {Boolean(error) && (
+        <Alert icon={<ErrorIcon />} severity="error">
+          {error}
+        </Alert>
+      )}
       <ul style={{ paddingInlineStart: '1em' }}>
         <Typography component="li" fontWeight={700} gutterBottom>
-          با ثبت سفارش، با شرایط و قوانین سایت موافقت می‌کنید.
+          با ثبت سفارش، با{' '}
+          <a href="https://www.rialir.com/terms/">شرایط و قوانین سایت</a> موافقت
+          می‌کنید.
         </Typography>
         <Typography component="li" fontWeight={700} gutterBottom>
           در علت تراکنش ذکر شود: بابت پرداخت قرض و تادیه دیون
         </Typography>
-        <Typography
-          component="li"
-          align="justify"
-          fontWeight={700}
-          gutterBottom
-        >
-          مشتری گرامی بعد از پرداخت، لطفاً تصویر فیش واریزی را به ربات تلگرام
-          ریالیر ارسال کنید.
-        </Typography>
         <Typography component="li" align="justify" fontWeight={700}>
-          مدت زمان تحویل سفارش: ۴ تا ۶ هفته کاری بعد از تحویل کالا توسط فروشنده
-          به دفتر ریالیر در استانبول
+          مدت زمان تحویل سفارش: ۲۰ تا ۳۰ روز کاری ترکیه بعد از تحویل کالا توسط
+          فروشنده به دفتر ریالیر در استانبول
         </Typography>
       </ul>
     </Box>
