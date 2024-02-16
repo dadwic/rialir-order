@@ -3,7 +3,7 @@ import { AppContext, AppDispatchContext } from './context';
 
 const initialState = {
   error: '',
-  success: false,
+  success: '',
   loading: false,
   pricing: {
     try: '0',
@@ -47,18 +47,18 @@ function appReducer(data, action) {
       return { ...data, pricing: action.data, loading: false };
     }
     case 'loading': {
-      return { ...data, loading: true, success: false, error: '' };
+      return { ...data, loading: true, success: '', error: '' };
     }
     case 'success': {
       return {
         ...initialState,
-        success: true,
+        success: action.message,
         loading: false,
         error: '',
       };
     }
     case 'set_error': {
-      return { ...data, error: action.message, success: false, loading: false };
+      return { ...data, error: action.message, success: '', loading: false };
     }
     default: {
       throw Error('Unknown action: ' + action.type);

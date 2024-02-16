@@ -135,7 +135,7 @@ export default function PricingForm() {
       const { message } = await res.json();
       if (res.ok) {
         setEditMode(true);
-        dispatch({ type: 'success' });
+        dispatch({ type: 'success', message });
       } else {
         dispatch({ type: 'set_error', message });
       }
@@ -164,11 +164,9 @@ export default function PricingForm() {
       >
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            {success ? (
+            {Boolean(success) ? (
               <Alert icon={<CheckIcon />} severity="success">
-                مشتری گرامی، سفارش شما ثبت شد. با تشکر
-                <br />
-                بعد از پرداخت تصویر فیش واریزی را به تلگرام ریالیر ارسال کنید.
+                {success}
               </Alert>
             ) : (
               <Typography
