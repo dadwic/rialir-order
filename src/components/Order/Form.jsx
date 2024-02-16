@@ -86,7 +86,7 @@ export default function PricingForm() {
   const [editMode, setEditMode] = useState(true);
   const { control, watch, setValue, handleSubmit } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: order,
+    values: order,
   });
   const { fields, append, remove } = useFieldArray({
     control,
