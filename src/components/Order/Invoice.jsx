@@ -165,6 +165,7 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
             مشخصات خریدار
           </Typography>
           <Typography gutterBottom>{orderApi?.full_name || '-'}</Typography>
+          <Typography gutterBottom>{orderApi?.email || '-'}</Typography>
           <Typography>{orderApi?.phone_number || '-'}</Typography>
         </Grid>
         <Divider flexItem orientation="vertical">
