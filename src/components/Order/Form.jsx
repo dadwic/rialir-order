@@ -165,11 +165,9 @@ export default function PricingForm() {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             {Boolean(success) ? (
-              <Alert
-                icon={<CheckIcon />}
-                severity="success"
-                dangerouslySetInnerHTML={{ __html: success }}
-              />
+              <Alert icon={<CheckIcon />} severity="success">
+                <div dangerouslySetInnerHTML={{ __html: success }} />
+              </Alert>
             ) : (
               <Typography
                 variant="body2"
