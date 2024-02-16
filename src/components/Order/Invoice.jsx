@@ -31,7 +31,7 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
   return (
     <Box>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <div />
+        <div style={{ width: 48 }} />
         <div>
           <Typography
             variant="h6"
