@@ -294,7 +294,7 @@ export default function PricingForm() {
                   label="توضیحات محصول"
                   id={`products.${index}.description`}
                   name={`products.${index}.description`}
-                  placeholder="جزئیات بیشتری اضافه کنید..."
+                  placeholder="مثال: رنگ یا کد محصول"
                 />
               </Grid>
             </React.Fragment>
@@ -322,6 +322,7 @@ export default function PricingForm() {
               name="description"
               id="description"
               label="توضیحات"
+              placeholder="جزئیات بیشتری اضافه کنید..."
             />
             <FormHelperText id="description-helper">
               جزئیات دقیق سفارش را به فارسی بنویسید.
