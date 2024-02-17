@@ -176,7 +176,10 @@ export default function PricingForm() {
                 fontWeight={700}
               >
                 قبل از ثبت سفارش، آدرس پستی خود را در صفحه{' '}
-                <a href="https://www.rialir.com/account/edit-address/">
+                <a
+                  target="_blank"
+                  href="https://www.rialir.com/account/edit-address/"
+                >
                   آدرس ها
                 </a>{' '}
                 ثبت کنید.

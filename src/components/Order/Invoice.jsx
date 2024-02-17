@@ -202,8 +202,10 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
       <ul style={{ paddingInlineStart: '1em' }}>
         <Typography component="li" fontWeight={700} gutterBottom>
           با ثبت سفارش، با{' '}
-          <a href="https://www.rialir.com/terms/">شرایط و قوانین سایت</a> موافقت
-          می‌کنید.
+          <a target="_blank" href="https://www.rialir.com/terms/">
+            شرایط و قوانین سایت
+          </a>{' '}
+          موافقت می‌کنید.
         </Typography>
         <Typography component="li" fontWeight={700} gutterBottom>
           در علت تراکنش ذکر شود: بابت پرداخت قرض و تادیه دیون
