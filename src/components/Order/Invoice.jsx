@@ -134,7 +134,7 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
           <TableHead>
             <TableRow>
               <TableCell>لینک محصول</TableCell>
-              <TableCell align="left">توضیحات</TableCell>
+              <TableCell align="center">توضیحات</TableCell>
               <TableCell align="right">سایز محصول</TableCell>
             </TableRow>
           </TableHead>
@@ -151,7 +151,9 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
                 <TableCell component="th" scope="row">
                   {new URL(product.link).hostname}
                 </TableCell>
-                <TableCell align="left">{product.description || '-'}</TableCell>
+                <TableCell align="center">
+                  {product.description || '-'}
+                </TableCell>
                 <TableCell align="right">{product.size}</TableCell>
               </TableRow>
             ))}

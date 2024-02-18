@@ -292,10 +292,10 @@ export default function PricingForm() {
                 <Input
                   required={false}
                   control={control}
-                  label="توضیحات محصول"
+                  label="رنگ یا کد محصول"
                   id={`products.${index}.description`}
                   name={`products.${index}.description`}
-                  placeholder="مثال: رنگ یا کد محصول"
+                  placeholder="مثال: رنگ Light blue"
                 />
               </Grid>
             </React.Fragment>
@@ -305,8 +305,8 @@ export default function PricingForm() {
               control={control}
               name="subtotal"
               id="subtotal"
-              type="tel"
               label="مبلغ کل به لیر"
+              placeholder="مثال: 7425.47₺"
               InputProps={{
                 inputComponent: NumericFormat,
                 endAdornment: (
