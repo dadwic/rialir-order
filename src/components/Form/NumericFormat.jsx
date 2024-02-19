@@ -18,6 +18,7 @@ const NumericFormatCustom = React.forwardRef(
           });
         }}
         decimalScale={2}
+        fixedDecimalScale
         thousandSeparator
         valueIsNumericString
       />
