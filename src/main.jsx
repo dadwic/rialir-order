@@ -7,6 +7,7 @@ import { prefixer } from 'stylis';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import AppProvider from './AppProvider';
+import Drawer from './components/Drawer';
 import OrderForm from './components/Order/Form';
 import VazirmatnWoff2 from './fonts/Vazirmatn-Regular.woff2';
 
@@ -76,6 +77,7 @@ createRoot(shadowContainer).render(
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <OrderForm />
+          <Drawer />
         </ThemeProvider>
       </CacheProvider>
     </AppProvider>
