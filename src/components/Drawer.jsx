@@ -65,8 +65,8 @@ export default function Drawer() {
           onKeyDown={toggleDrawer(false)}
         >
           <List>
-            <ListItem href="/lir/">
-              <ListItemButton>
+            <ListItem disablePadding>
+              <ListItemButton href="/lir/">
                 <ListItemIcon>
                   <LiraIcon />
                 </ListItemIcon>
@@ -74,8 +74,8 @@ export default function Drawer() {
               </ListItemButton>
             </ListItem>
             <Divider />
-            <ListItem href="/account/">
-              <ListItemButton>
+            <ListItem disablePadding>
+              <ListItemButton href="/account/">
                 <ListItemIcon>
                   <DashboardIcon />
                 </ListItemIcon>
@@ -83,8 +83,8 @@ export default function Drawer() {
               </ListItemButton>
             </ListItem>
             <Divider />
-            <ListItem href="/account/order/">
-              <ListItemButton>
+            <ListItem disablePadding>
+              <ListItemButton href="/account/order/">
                 <ListItemIcon>
                   <AddShoppingIcon />
                 </ListItemIcon>
@@ -92,8 +92,8 @@ export default function Drawer() {
               </ListItemButton>
             </ListItem>
             <Divider />
-            <ListItem href="/account/orders/">
-              <ListItemButton>
+            <ListItem disablePadding>
+              <ListItemButton href="/account/orders/">
                 <ListItemIcon>
                   <ShoppingIcon />
                 </ListItemIcon>
@@ -101,8 +101,8 @@ export default function Drawer() {
               </ListItemButton>
             </ListItem>
             <Divider />
-            <ListItem href="/account/edit-address/">
-              <ListItemButton>
+            <ListItem disablePadding>
+              <ListItemButton href="/account/edit-address/">
                 <ListItemIcon>
                   <LocationIcon />
                 </ListItemIcon>
@@ -110,8 +110,8 @@ export default function Drawer() {
               </ListItemButton>
             </ListItem>
             <Divider />
-            <ListItem href="/account/edit-account/">
-              <ListItemButton>
+            <ListItem disablePadding>
+              <ListItemButton href="/account/edit-account/">
                 <ListItemIcon>
                   <AccountIcon />
                 </ListItemIcon>
@@ -119,8 +119,10 @@ export default function Drawer() {
               </ListItemButton>
             </ListItem>
             <Divider />
-            <ListItem href={`/account/logout/?_wpnonce=${orderApi.nonce}`}>
-              <ListItemButton>
+            <ListItem disablePadding>
+              <ListItemButton
+                href={`/account/logout/?_wpnonce=${orderApi.nonce}`}
+              >
                 <ListItemIcon>
                   <LogoutIcon />
                 </ListItemIcon>
