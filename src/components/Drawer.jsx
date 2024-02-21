@@ -46,7 +46,7 @@ export default function Drawer() {
           display: { md: 'none' },
           position: 'fixed',
           bottom: 16,
-          left: 16,
+          right: 16,
         }}
       >
         <MenuIcon sx={{ mr: 1 }} />
