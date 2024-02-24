@@ -19,6 +19,7 @@ import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { numFormat, persianNumber, tryFormat } from '../../utils';
 import { AppContext } from '../../context';
+import AlertDialog from './AlertDialog';
 import Logo from '../Logo';
 
 moment.loadPersian({ usePersianDigits: true, dialect: 'persian-modern' });
@@ -30,6 +31,7 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
 
   return (
     <Box>
+      <AlertDialog />
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <div style={{ width: 48 }} />
         <div>
@@ -47,7 +49,7 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
             textAlign="center"
             color="text.secondary"
           >
-            {moment().zone('+0330').format('dddd jD jMMMM jYYYY - HH:mm')}
+            {moment().zone('+0330').format('jD jMMMM jYYYY - HH:mm')}
           </Typography>
         </div>
         <IconButton
@@ -62,9 +64,12 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
       <TableContainer component={Paper} variant="outlined" sx={{ mt: 2 }}>
         <Table size="small">
           <TableHead>
-            <TableRow>
-              <TableCell align="center">قیمت لحظه ای لیر</TableCell>
-              <TableCell align="center">کارمزد خرید</TableCell>
+            <TableRow sx={{ th: { fontSize: { xs: '1.2rem', sm: '1.4rem' } } }}>
+              <TableCell align="center">قیمت لیر</TableCell>
+              <TableCell align="center">
+                کارمزد{' '}
+                <Box sx={{ display: { xs: 'none', sm: 'inline' } }}>لیر</Box>
+              </TableCell>
               <TableCell align="center">قابل پرداخت</TableCell>
             </TableRow>
           </TableHead>
@@ -106,7 +111,12 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
               }}
             >
               <TableCell colSpan={incDsc ? 2 : 3}>
-                <Typography variant="subtitle2">
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    textAlign: { xs: 'center', sm: 'left' },
+                  }}
+                >
                   قیمت کالاها: {tryFormat(order.subtotal)} لیر
                 </Typography>
               </TableCell>
@@ -120,11 +130,19 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
             </TableRow>
             <TableRow>
               <TableCell colSpan={3}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography
+                  variant="subtitle2"
+                  color="text.secondary"
+                  sx={{
+                    textAlign: { xs: 'center', sm: 'left' },
+                  }}
+                >
                   تاریخ بروزرسانی‌ قیمت لیر:&nbsp;
-                  {moment(pricing.date || new Date().getTime())
-                    .zone('+0330')
-                    .format('jYYYY/jMM/jDD - HH:mm:ss')}
+                  <Box sx={{ display: { xs: 'block', sm: 'inline' } }}>
+                    {moment(pricing.date || new Date().getTime())
+                      .zone('+0330')
+                      .format('jYYYY/jMM/jDD - HH:mm:ss')}
+                  </Box>
                 </Typography>
               </TableCell>
             </TableRow>
@@ -134,8 +152,16 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
           <TableHead>
             <TableRow>
               <TableCell>لینک محصول</TableCell>
-              <TableCell align="center">توضیحات</TableCell>
-              <TableCell align="right">سایز محصول</TableCell>
+              <TableCell
+                align="center"
+                sx={{ display: { xs: 'none', sm: 'block' } }}
+              >
+                توضیحات
+              </TableCell>
+              <TableCell align="right">
+                سایز{' '}
+                <Box sx={{ display: { xs: 'none', sm: 'inline' } }}>محصول</Box>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody
@@ -151,7 +177,10 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
                 <TableCell component="th" scope="row">
                   {new URL(product.link).hostname}
                 </TableCell>
-                <TableCell align="center">
+                <TableCell
+                  align="center"
+                  sx={{ display: { xs: 'none', sm: 'block' } }}
+                >
                   {product.description || '-'}
                 </TableCell>
                 <TableCell align="right">{product.size}</TableCell>
@@ -161,27 +190,38 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
         </Table>
       </TableContainer>
       <Grid container>
-        <Grid item xs sx={{ py: 2 }}>
+        <Grid
+          item
+          xs={12}
+          sm={5}
+          sx={(t) => ({
+            py: 2,
+            textAlign: { xs: 'center', sm: 'center', md: 'left' },
+          })}
+        >
           <Typography variant="h6" gutterBottom>
             مشخصات خریدار
           </Typography>
           <Typography gutterBottom>{orderApi?.full_name || '-'}</Typography>
-          <Typography>{orderApi?.phone_number || '-'}</Typography>
+          <Typography gutterBottom>{orderApi?.phone_number || '-'}</Typography>
+          <Divider sx={{ display: { xs: 'block', sm: 'none' } }} />
         </Grid>
-        <Divider flexItem orientation="vertical">
+        <Divider
+          flexItem
+          orientation="vertical"
+          sx={{ display: { xs: 'none', sm: 'flex' } }}
+        >
           <Logo />
         </Divider>
-        <Grid item xs sx={{ py: 2 }}>
-          <Typography align="center" variant="h6" gutterBottom>
+        <Grid item xs={12} sm={5} sx={{ py: 2, textAlign: 'center' }}>
+          <Typography variant="h6" gutterBottom>
             روش پرداخت
           </Typography>
-          <Typography align="center" gutterBottom>
-            شماره کارت بانک سامان
-          </Typography>
-          <Typography align="center" fontWeight={700} gutterBottom>
+          <Typography gutterBottom>شماره کارت بانک سامان</Typography>
+          <Typography fontWeight={700} gutterBottom>
             6219&nbsp;8619&nbsp;0609&nbsp;8149
           </Typography>
-          <Typography align="center">بنام مهرداد مهرعلیان</Typography>
+          <Typography>بنام مهرداد مهرعلیان</Typography>
         </Grid>
       </Grid>
       <Divider />

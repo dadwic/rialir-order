@@ -80,9 +80,9 @@ const schema = yup
 
 export default function PricingForm() {
   const form = useRef(null);
-  const { order, pricing, loading, success } = useContext(AppContext);
-  const dispatch = useContext(AppDispatchContext);
   const [editMode, setEditMode] = useState(true);
+  const dispatch = useContext(AppDispatchContext);
+  const { order, pricing, loading, success, orderId } = useContext(AppContext);
   const { control, watch, setValue, handleSubmit } = useForm({
     resolver: yupResolver(schema),
     values: order,
@@ -132,10 +132,10 @@ export default function PricingForm() {
           body: JSON.stringify(order),
         }
       );
-      const { message } = await res.json();
+      const { message, ...data } = await res.json();
       if (res.ok) {
         setEditMode(true);
-        dispatch({ type: 'success', message });
+        dispatch({ type: 'success', message, orderId: data.order_id });
       } else {
         dispatch({ type: 'set_error', message });
       }
@@ -165,9 +165,21 @@ export default function PricingForm() {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             {Boolean(success) ? (
-              <Alert icon={<CheckIcon />} severity="success">
-                <div dangerouslySetInnerHTML={{ __html: success }} />
-              </Alert>
+              <>
+                <Button
+                  fullWidth
+                  color="success"
+                  variant="outlined"
+                  href={`https://www.rialir.com/account/view-order/${orderId}/`}
+                  target="_blank"
+                  sx={{ mb: 1 }}
+                >
+                  جزئیات سفارش شماره {persianNumber(orderId)}
+                </Button>
+                <Alert icon={<CheckIcon />} severity="success">
+                  <div dangerouslySetInnerHTML={{ __html: success }} />
+                </Alert>
+              </>
             ) : (
               <Typography
                 variant="body2"
@@ -195,7 +207,7 @@ export default function PricingForm() {
                 append({ link: '', size: 'standard', description: '' })
               }
             >
-              افزودن محصول جدید به سفارش
+              افزودن محصول به سفارش
             </Button>
           </Grid>
           {fields.map((field, index) => (
@@ -305,7 +317,7 @@ export default function PricingForm() {
               control={control}
               name="subtotal"
               id="subtotal"
-              label="مبلغ کل به لیر"
+              label="قیمت کالاها به لیر"
               placeholder="مثال: 7425.47₺"
               InputProps={{
                 inputComponent: NumericFormat,
@@ -333,7 +345,7 @@ export default function PricingForm() {
               control={control}
               name="new_address"
               id="new_address"
-              label="ارسال سفارش به آدرس شخص دیگر"
+              label="ارسال سفارش به آدرس دیگر"
             />
           </Grid>
           {new_address && (

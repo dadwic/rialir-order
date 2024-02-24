@@ -4,6 +4,7 @@ import { AppContext, AppDispatchContext } from './context';
 const initialState = {
   error: '',
   success: '',
+  orderId: '',
   loading: false,
   pricing: {
     try: '0',
@@ -41,7 +42,7 @@ function appReducer(data, action) {
       return initialState;
     }
     case 'set_order': {
-      return { ...data, order: action.data };
+      return { ...data, order: action.data, orderId: '' };
     }
     case 'set_pricing': {
       return { ...data, pricing: action.data, loading: false };
@@ -53,6 +54,7 @@ function appReducer(data, action) {
       return {
         ...initialState,
         success: action.message,
+        orderId: action.orderId,
         loading: false,
         error: '',
       };
