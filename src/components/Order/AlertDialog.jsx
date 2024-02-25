@@ -5,6 +5,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Typography from '@mui/material/Typography';
+import WarningIcon from '@mui/icons-material/Warning';
 
 export default function AlertDialog() {
   const [open, setOpen] = React.useState(true);
@@ -16,22 +18,55 @@ export default function AlertDialog() {
   return (
     <Dialog
       open={open}
-      onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">{'⚠️'} پیام مهم</DialogTitle>
+      <DialogTitle
+        id="alert-dialog-title"
+        sx={{ display: 'flex', alignItems: 'center' }}
+      >
+        <WarningIcon color="primary" sx={{ mr: 1 }} />
+        پیام‌های مهم
+      </DialogTitle>
       <DialogContent>
         <DialogContentText
+          component="div"
           id="alert-dialog-description"
-          sx={{ fontWeight: 700, color: '#000' }}
+          sx={{
+            ul: { paddingInlineStart: 0 },
+            li: { fontWeight: 600, color: '#000' },
+          }}
         >
-          قبل از ثبت سفارش، حتما از پیش فاکتور بصورت کامل اسکرین شات بگیرید.
+          <ul>
+            <Typography component="li" gutterBottom>
+              با ثبت سفارش، با&nbsp;
+              <a target="_blank" href="https://www.rialir.com/terms/">
+                شرایط و قوانین ریالیر
+              </a>
+              &nbsp;موافقت می‌کنید.
+            </Typography>
+            <Typography component="li" gutterBottom>
+              قبل از ثبت سفارش، از پیش فاکتور بصورت کامل اسکرین شات بگیرید.
+            </Typography>
+            <Typography component="li" gutterBottom>
+              در توضیحات تراکنش ذکر شود: بابت پرداخت قرض و تادیه دیون
+            </Typography>
+            <Typography component="li" align="justify" gutterBottom>
+              لطفا دقت فرمایید هزینه کارگو سایت مورد نظر به قیمت کالاها اضافه
+              شود، در غیر این صورت سفارش شما تایید نخواهد شد.
+            </Typography>
+          </ul>
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" onClick={handleClose} autoFocus fullWidth>
-          بستن این پیام
+        <Button
+          size="large"
+          variant="contained"
+          onClick={handleClose}
+          autoFocus
+          fullWidth
+        >
+          تایید میکنم
         </Button>
       </DialogActions>
     </Dialog>

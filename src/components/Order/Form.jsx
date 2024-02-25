@@ -181,20 +181,15 @@ export default function PricingForm() {
                 </Alert>
               </>
             ) : (
-              <Typography
-                variant="body2"
-                color="error"
-                align="center"
-                fontWeight={700}
-              >
-                قبل از ثبت سفارش، آدرس پستی خود را در صفحه{' '}
+              <Typography variant="subtitle2" color="error" align="center">
+                قبل از ثبت سفارش، آدرس خود را در صفحه&nbsp;
                 <a
                   target="_blank"
                   href="https://www.rialir.com/account/edit-address/"
                 >
                   آدرس ها
-                </a>{' '}
-                ثبت کنید.
+                </a>
+                &nbsp;ثبت کنید.
               </Typography>
             )}
             <Button
@@ -283,8 +278,10 @@ export default function PricingForm() {
                       '4XL',
                       '5XL',
                       '6XL',
-                    ].map((size) => (
-                      <option value={size}>{size}</option>
+                    ].map((size, key) => (
+                      <option key={key} value={size}>
+                        {size}
+                      </option>
                     ))}
                   </optgroup>
                   <optgroup label="سایز های متفرقه">
@@ -293,8 +290,10 @@ export default function PricingForm() {
                   </optgroup>
                   <optgroup label="سایز های عددی">
                     {Array.from({ length: 80 }, (_, i) => (36 + i) / 2).map(
-                      (size) => (
-                        <option value={size}>{size}</option>
+                      (size, key) => (
+                        <option key={key} value={size}>
+                          {size}
+                        </option>
                       )
                     )}
                   </optgroup>
@@ -317,8 +316,8 @@ export default function PricingForm() {
               control={control}
               name="subtotal"
               id="subtotal"
-              label="قیمت کالاها به لیر"
-              placeholder="مثال: 7425.47₺"
+              label="قیمت کالاها به لیر + هزینه Kargo"
+              placeholder="مثال: 7425.47₺ + هزینه Kargo"
               InputProps={{
                 inputComponent: NumericFormat,
                 endAdornment: (
@@ -345,7 +344,7 @@ export default function PricingForm() {
               control={control}
               name="new_address"
               id="new_address"
-              label="ارسال سفارش به آدرس دیگر"
+              label="ارسال سفارش به آدرس شخص دیگر"
             />
           </Grid>
           {new_address && (

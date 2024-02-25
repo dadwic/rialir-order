@@ -24,7 +24,7 @@ import Logo from '../Logo';
 
 moment.loadPersian({ usePersianDigits: true, dialect: 'persian-modern' });
 
-export default function ShippingInvoice({ onEdit, onSubmit }) {
+export default function Invoice({ onEdit, onSubmit }) {
   const { order, pricing, loading, error, success } = useContext(AppContext);
   const incDsc = pricing.discount;
   const fee = parseInt(pricing.fee);
@@ -49,7 +49,7 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
             textAlign="center"
             color="text.secondary"
           >
-            {moment().zone('+0330').format('jD jMMMM jYYYY - HH:mm')}
+            {moment().zone('+0330').format('dddd jD jMMMM jYYYY - HH:mm')}
           </Typography>
         </div>
         <IconButton
@@ -64,12 +64,9 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
       <TableContainer component={Paper} variant="outlined" sx={{ mt: 2 }}>
         <Table size="small">
           <TableHead>
-            <TableRow sx={{ th: { fontSize: { xs: '1.2rem', sm: '1.4rem' } } }}>
+            <TableRow>
               <TableCell align="center">قیمت لیر</TableCell>
-              <TableCell align="center">
-                کارمزد{' '}
-                <Box sx={{ display: { xs: 'none', sm: 'inline' } }}>لیر</Box>
-              </TableCell>
+              <TableCell align="center">کارمزد خرید</TableCell>
               <TableCell align="center">قابل پرداخت</TableCell>
             </TableRow>
           </TableHead>
@@ -111,12 +108,7 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
               }}
             >
               <TableCell colSpan={incDsc ? 2 : 3}>
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    textAlign: { xs: 'center', sm: 'left' },
-                  }}
-                >
+                <Typography variant="subtitle2">
                   قیمت کالاها: {tryFormat(order.subtotal)} لیر
                 </Typography>
               </TableCell>
@@ -130,19 +122,11 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
             </TableRow>
             <TableRow>
               <TableCell colSpan={3}>
-                <Typography
-                  variant="subtitle2"
-                  color="text.secondary"
-                  sx={{
-                    textAlign: { xs: 'center', sm: 'left' },
-                  }}
-                >
+                <Typography variant="subtitle2" color="text.secondary">
                   تاریخ بروزرسانی‌ قیمت لیر:&nbsp;
-                  <Box sx={{ display: { xs: 'block', sm: 'inline' } }}>
-                    {moment(pricing.date || new Date().getTime())
-                      .zone('+0330')
-                      .format('jYYYY/jMM/jDD - HH:mm:ss')}
-                  </Box>
+                  {moment(pricing.date || new Date().getTime())
+                    .zone('+0330')
+                    .format('jYYYY/jMM/jDD - HH:mm:ss')}
                 </Typography>
               </TableCell>
             </TableRow>
@@ -158,10 +142,7 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
               >
                 توضیحات
               </TableCell>
-              <TableCell align="right">
-                سایز{' '}
-                <Box sx={{ display: { xs: 'none', sm: 'inline' } }}>محصول</Box>
-              </TableCell>
+              <TableCell align="right">سایز</TableCell>
             </TableRow>
           </TableHead>
           <TableBody
@@ -192,28 +173,22 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
       <Grid container>
         <Grid
           item
-          xs={12}
-          sm={5}
-          sx={(t) => ({
+          xs
+          sx={{
             py: 2,
             textAlign: { xs: 'center', sm: 'center', md: 'left' },
-          })}
+          }}
         >
           <Typography variant="h6" gutterBottom>
             مشخصات خریدار
           </Typography>
           <Typography gutterBottom>{orderApi?.full_name || '-'}</Typography>
           <Typography gutterBottom>{orderApi?.phone_number || '-'}</Typography>
-          <Divider sx={{ display: { xs: 'block', sm: 'none' } }} />
         </Grid>
-        <Divider
-          flexItem
-          orientation="vertical"
-          sx={{ display: { xs: 'none', sm: 'flex' } }}
-        >
+        <Divider flexItem orientation="vertical">
           <Logo />
         </Divider>
-        <Grid item xs={12} sm={5} sx={{ py: 2, textAlign: 'center' }}>
+        <Grid item xs sx={{ py: 2, textAlign: 'center' }}>
           <Typography variant="h6" gutterBottom>
             روش پرداخت
           </Typography>
@@ -228,7 +203,7 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
       <LoadingButton
         fullWidth
         loading={loading}
-        disabled={success}
+        disabled={Boolean(success)}
         onClick={onSubmit}
         size="large"
         variant="contained"
@@ -237,26 +212,27 @@ export default function ShippingInvoice({ onEdit, onSubmit }) {
         ثبت سفارش
       </LoadingButton>
       {Boolean(error) && (
-        <Alert icon={<ErrorIcon />} severity="error">
+        <Alert icon={<ErrorIcon />} sx={{ mb: 2 }} severity="error">
           {error}
         </Alert>
       )}
-      <ul style={{ paddingInlineStart: '1em' }}>
-        <Typography component="li" fontWeight={700} gutterBottom>
-          با ثبت سفارش، با{' '}
+      <Box sx={{ '& p': { fontWeight: 700 } }}>
+        <Typography gutterBottom>توضیحات: {order.description}</Typography>
+        <Typography gutterBottom>
+          با ثبت سفارش،&nbsp;
           <a target="_blank" href="https://www.rialir.com/terms/">
-            شرایط و قوانین سایت
-          </a>{' '}
-          موافقت می‌کنید.
+            شرایط و قوانین ریالیر
+          </a>
+          &nbsp;را می‌پذیرید.
         </Typography>
-        <Typography component="li" fontWeight={700} gutterBottom>
-          در علت تراکنش ذکر شود: بابت پرداخت قرض و تادیه دیون
+        <Typography gutterBottom>
+          توضیحات تراکنش: بابت پرداخت قرض و تادیه دیون
         </Typography>
-        <Typography component="li" align="justify" fontWeight={700}>
+        <Typography>
           مدت زمان تحویل سفارش: ۲۰ تا ۳۰ روز کاری ترکیه بعد از تحویل کالا توسط
           فروشنده به دفتر ریالیر در استانبول
         </Typography>
-      </ul>
+      </Box>
     </Box>
   );
 }
