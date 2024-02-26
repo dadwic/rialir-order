@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import moment from 'moment-jalaali';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -25,13 +25,19 @@ import Logo from '../Logo';
 moment.loadPersian({ usePersianDigits: true, dialect: 'persian-modern' });
 
 export default function Invoice({ onEdit, onSubmit }) {
+  const [confirm, setConfirm] = useState(false);
   const { order, pricing, loading, error, success } = useContext(AppContext);
   const incDsc = pricing.discount;
   const fee = parseInt(pricing.fee);
 
+  const handleSubmit = () => {
+    if (confirm) onSubmit();
+    else setConfirm(true);
+  };
+
   return (
     <Box>
-      <AlertDialog />
+      <AlertDialog confirm={confirm} />
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <div style={{ width: 48 }} />
         <div>
@@ -203,8 +209,8 @@ export default function Invoice({ onEdit, onSubmit }) {
       <LoadingButton
         fullWidth
         loading={loading}
+        onClick={handleSubmit}
         disabled={Boolean(success)}
-        onClick={onSubmit}
         size="large"
         variant="contained"
         sx={{ my: 2 }}
