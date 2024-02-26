@@ -33,7 +33,7 @@ export default function AlertDialog() {
           component="div"
           id="alert-dialog-description"
           sx={{
-            ul: { paddingInlineStart: 0 },
+            ul: { paddingInlineStart: 2 },
             li: { fontWeight: 600, color: '#000' },
           }}
         >

@@ -226,7 +226,7 @@ export default function Invoice({ onEdit, onSubmit }) {
           &nbsp;را می‌پذیرید.
         </Typography>
         <Typography gutterBottom>
-          توضیحات تراکنش: بابت پرداخت قرض و تادیه دیون
+          در توضیحات تراکنش ذکر شود: بابت پرداخت قرض و تادیه دیون
         </Typography>
         <Typography>
           مدت زمان تحویل سفارش: ۲۰ تا ۳۰ روز کاری ترکیه بعد از تحویل کالا توسط
