@@ -59,13 +59,14 @@ export default function Invoice({ onEdit, onSubmit }) {
   };
 
   return (
-    <Box ref={ref} bgcolor="white">
+    <Box ref={ref} p={2} bgcolor="white">
       <AlertDialog onClose={handleCapture} />
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
         TransitionComponent={Slide}
         onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
       >
         <Alert
           variant="filled"

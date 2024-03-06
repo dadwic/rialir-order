@@ -151,6 +151,7 @@ export default function PricingForm() {
   return (
     <Box
       sx={{
+        padding: 2,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -163,7 +164,7 @@ export default function PricingForm() {
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           <Grid item xs={12}>
             {Boolean(success) ? (
               <>
