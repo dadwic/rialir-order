@@ -8,11 +8,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
 import WarningIcon from '@mui/icons-material/Warning';
 
-export default function AlertDialog() {
+export default function AlertDialog({ onClose }) {
   const [open, setOpen] = useState(true);
 
   const handleClose = () => {
     setOpen(false);
+    onClose();
   };
 
   return (
@@ -46,9 +47,6 @@ export default function AlertDialog() {
               &nbsp;موافقت می‌کنید.
             </Typography>
             <Typography component="li" gutterBottom>
-              قبل از ثبت سفارش، از پیش فاکتور بصورت کامل اسکرین شات بگیرید.
-            </Typography>
-            <Typography component="li" gutterBottom>
               در توضیحات تراکنش ذکر شود: بابت پرداخت قرض و تادیه دیون
             </Typography>
             <Typography component="li" align="justify" gutterBottom>
@@ -59,15 +57,23 @@ export default function AlertDialog() {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button
-          size="large"
-          variant="contained"
-          onClick={handleClose}
-          autoFocus
-          fullWidth
-        >
-          تایید میکنم
-        </Button>
+        <div>
+          <Button
+            size="large"
+            variant="contained"
+            onClick={handleClose}
+            sx={{ mb: 1 }}
+            autoFocus
+            fullWidth
+          >
+            تایید میکنم
+          </Button>
+          <Typography align="justify" variant="subtitle2" fontWeight={700}>
+            بعد از تایید، فایل پیش فاکتور بصورت اتوماتیک دانلود خواهد شد. در
+            صورت بروز خطا هنگام دانلود، حتما قبل از ثبت سفارش از پیش فاکتور
+            بصورت کامل اسکرین شات بگیرید.
+          </Typography>
+        </div>
       </DialogActions>
     </Dialog>
   );
