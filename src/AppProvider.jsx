@@ -7,11 +7,11 @@ const initialState = {
   orderId: '',
   loading: false,
   pricing: {
-    try: '0',
-    fee: '200',
+    try_irt: '0',
+    fee: '300',
     discountVal: '',
     discount: false,
-    date: null,
+    time: null,
   },
   order: {
     subtotal: '',

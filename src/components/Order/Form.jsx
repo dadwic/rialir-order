@@ -109,7 +109,7 @@ export default function PricingForm() {
     await updateRate();
     const subtotal = parseFloat(form.subtotal);
     const fee = parseInt(pricing.fee);
-    const rate = parseInt(pricing.try) + fee;
+    const rate = parseInt(pricing.try_irt) + fee;
     // Convert toman to rial
     const total = rate * subtotal * 10;
     const data = { ...form, total };

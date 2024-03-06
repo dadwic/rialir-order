@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import moment from 'moment-jalaali';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -25,19 +25,13 @@ import Logo from '../Logo';
 moment.loadPersian({ usePersianDigits: true, dialect: 'persian-modern' });
 
 export default function Invoice({ onEdit, onSubmit }) {
-  const [confirm, setConfirm] = useState(false);
   const { order, pricing, loading, error, success } = useContext(AppContext);
   const incDsc = pricing.discount;
   const fee = parseInt(pricing.fee);
 
-  const handleSubmit = () => {
-    if (confirm) onSubmit();
-    else setConfirm(true);
-  };
-
   return (
     <Box>
-      <AlertDialog confirm={confirm} />
+      <AlertDialog />
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <div style={{ width: 48 }} />
         <div>
@@ -91,7 +85,7 @@ export default function Invoice({ onEdit, onSubmit }) {
                 }}
               >
                 <Typography variant="subtitle2">
-                  {numFormat(pricing.try)} تومان
+                  {numFormat(pricing.try_irt)} تومان
                 </Typography>
               </TableCell>
               <TableCell
@@ -130,8 +124,8 @@ export default function Invoice({ onEdit, onSubmit }) {
               <TableCell colSpan={3}>
                 <Typography variant="subtitle2" color="text.secondary">
                   تاریخ بروزرسانی‌ قیمت لیر:&nbsp;
-                  {moment(pricing.date || new Date().getTime())
-                    .zone('+0330')
+                  {moment
+                    .unix(pricing.time || new Date().getTime())
                     .format('jYYYY/jMM/jDD - HH:mm:ss')}
                 </Typography>
               </TableCell>
@@ -209,7 +203,7 @@ export default function Invoice({ onEdit, onSubmit }) {
       <LoadingButton
         fullWidth
         loading={loading}
-        onClick={handleSubmit}
+        onClick={onSubmit}
         disabled={Boolean(success)}
         size="large"
         variant="contained"
