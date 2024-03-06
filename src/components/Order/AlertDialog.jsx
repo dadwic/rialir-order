@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -57,7 +58,7 @@ export default function AlertDialog({ onClose }) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <div>
+        <Box p={2}>
           <Button
             size="large"
             variant="contained"
@@ -73,7 +74,7 @@ export default function AlertDialog({ onClose }) {
             صورت بروز خطا هنگام دانلود، حتما قبل از ثبت سفارش از پیش فاکتور
             بصورت کامل اسکرین شات بگیرید.
           </Typography>
-        </div>
+        </Box>
       </DialogActions>
     </Dialog>
   );
