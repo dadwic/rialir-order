@@ -30,7 +30,7 @@ export default function Invoice({ onEdit, onSubmit }) {
   const fee = parseInt(pricing.fee);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }, []);
 
   return (

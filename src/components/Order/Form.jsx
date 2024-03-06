@@ -103,7 +103,7 @@ export default function PricingForm() {
 
   useEffect(() => {
     updateRate();
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }, []);
 
   const onSubmit = async (form) => {
