@@ -107,7 +107,7 @@ export default function PricingForm() {
   useEffect(() => {
     updateRate();
     document.getElementById('order-app').scrollIntoView({ behavior: 'smooth' });
-  }, []);
+  }, [editMode]);
 
   const onSubmit = async (form) => {
     await updateRate();
