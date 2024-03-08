@@ -47,10 +47,10 @@ function appReducer(data, action) {
     case 'set_pricing': {
       return { ...data, pricing: action.data, loading: false };
     }
-    case 'loading': {
-      return { ...data, loading: true, success: '', error: '' };
+    case 'set_loading': {
+      return { ...data, loading: action.loading, success: '', error: '' };
     }
-    case 'success': {
+    case 'set_success': {
       return {
         ...initialState,
         success: action.message,

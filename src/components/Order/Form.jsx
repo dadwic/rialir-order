@@ -20,7 +20,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
-import CheckIcon from '@mui/icons-material/Check';
+import ErrorIcon from '@mui/icons-material/Error';
+import CheckIcon from '@mui/icons-material/CheckCircle';
 import LiraIcon from '@mui/icons-material/CurrencyLira';
 import BackspaceIcon from '@mui/icons-material/Backspace';
 import { AppContext, AppDispatchContext } from '../../context';
@@ -82,7 +83,8 @@ export default function PricingForm() {
   const form = useRef(null);
   const [editMode, setEditMode] = useState(true);
   const dispatch = useContext(AppDispatchContext);
-  const { order, pricing, loading, success, orderId } = useContext(AppContext);
+  const { order, pricing, loading, error, success, orderId } =
+    useContext(AppContext);
   const { control, watch, setValue, handleSubmit } = useForm({
     resolver: yupResolver(schema),
     values: order,
@@ -94,11 +96,12 @@ export default function PricingForm() {
   const new_address = watch('new_address');
 
   const updateRate = useCallback(async () => {
-    dispatch({ type: 'loading' });
+    dispatch({ type: 'set_loading', loading: true });
     // Update TRY price
     const res = await fetch(`${orderApi.root}${orderApi.versionString}pricing`);
     const data = await res.json();
-    dispatch({ type: 'set_pricing', data });
+    if (res.ok) dispatch({ type: 'set_pricing', data });
+    else dispatch({ type: 'set_error', message: 'خطا در بروزرسانی قیمت لیر' });
   });
 
   useEffect(() => {
@@ -121,7 +124,7 @@ export default function PricingForm() {
   const createOrder = async () => {
     try {
       updateRate();
-      dispatch({ type: 'loading' });
+      dispatch({ type: 'set_loading', loading: true });
       const res = await fetch(
         `${orderApi.root}${orderApi.versionString}order`,
         {
@@ -136,7 +139,7 @@ export default function PricingForm() {
       const { message, ...data } = await res.json();
       if (res.ok) {
         setEditMode(true);
-        dispatch({ type: 'success', message, orderId: data.order_id });
+        dispatch({ type: 'set_success', message, orderId: data.order_id });
       } else {
         dispatch({ type: 'set_error', message });
       }
@@ -178,7 +181,7 @@ export default function PricingForm() {
                 >
                   جزئیات سفارش شماره {persianNumber(orderId)}
                 </Button>
-                <Alert icon={<CheckIcon />} severity="success">
+                <Alert icon={<CheckIcon fontSize="small" />} severity="success">
                   <div dangerouslySetInnerHTML={{ __html: success }} />
                 </Alert>
               </>
@@ -388,10 +391,24 @@ export default function PricingForm() {
           size="large"
           variant="contained"
           loading={loading}
-          sx={{ my: 1 }}
+          disabled={Boolean(error)}
+          sx={{ my: 2 }}
         >
           ثبت سفارش
         </LoadingButton>
+        {Boolean(error) && (
+          <Alert
+            severity="error"
+            icon={<ErrorIcon fontSize="small" />}
+            action={
+              <Button color="inherit" size="small" onClick={updateRate}>
+                تلاش مجدد
+              </Button>
+            }
+          >
+            {error}
+          </Alert>
+        )}
       </Box>
     </Box>
   );
