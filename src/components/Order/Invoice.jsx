@@ -36,7 +36,7 @@ export default function Invoice({ onEdit, onSubmit }) {
   const fee = parseInt(pricing.fee);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    document.getElementById('order-app').scrollIntoView({ behavior: 'smooth' });
   }, []);
 
   const handleCapture = () => {
