@@ -6,6 +6,7 @@ const initialState = {
   success: '',
   orderId: '',
   loading: false,
+  editMode: false,
   pricing: {
     try_irt: '0',
     fee: '300',
@@ -42,7 +43,7 @@ function appReducer(data, action) {
       return initialState;
     }
     case 'set_order': {
-      return { ...data, order: action.data, orderId: '' };
+      return { ...data, order: action.data, orderId: '', editMode: false };
     }
     case 'set_pricing': {
       return { ...data, pricing: action.data, loading: false };
@@ -50,11 +51,15 @@ function appReducer(data, action) {
     case 'set_loading': {
       return { ...data, loading: action.loading, success: '', error: '' };
     }
+    case 'edit_mode': {
+      return { ...data, editMode: true };
+    }
     case 'set_success': {
       return {
         ...initialState,
         success: action.message,
         orderId: action.orderId,
+        editMode: true,
         loading: false,
         error: '',
       };

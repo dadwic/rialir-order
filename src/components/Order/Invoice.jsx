@@ -256,7 +256,7 @@ export default function Invoice({ onEdit, onSubmit }) {
       <Divider />
       <LoadingButton
         fullWidth
-        loading={loading || snackbarOpen}
+        loading={loading}
         onClick={handleCapture}
         size="large"
         variant="contained"

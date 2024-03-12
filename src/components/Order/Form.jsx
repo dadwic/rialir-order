@@ -1,17 +1,11 @@
-import React, {
-  useContext,
-  useRef,
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import React, { useContext, useRef, useEffect, useCallback } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import Alert from '@mui/lab/Alert';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Chip from '@mui/material/Chip';
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
@@ -82,8 +76,7 @@ const schema = yup
 export default function PricingForm() {
   const form = useRef(null);
   const dispatch = useContext(AppDispatchContext);
-  const [editMode, setEditMode] = useState(true);
-  const { order, pricing, loading, error, success, orderId } =
+  const { order, pricing, loading, editMode, error, success, orderId } =
     useContext(AppContext);
   const { control, watch, setValue, handleSubmit } = useForm({
     resolver: yupResolver(schema),
@@ -106,6 +99,9 @@ export default function PricingForm() {
 
   useEffect(() => {
     updateRate();
+  }, []);
+
+  useEffect(() => {
     document.getElementById('order-app').scrollIntoView({ behavior: 'smooth' });
   }, [editMode]);
 
@@ -118,12 +114,10 @@ export default function PricingForm() {
     const total = rate * subtotal * 10;
     const data = { ...form, total };
     dispatch({ type: 'set_order', data });
-    setEditMode(false);
   };
 
   const createOrder = async () => {
     try {
-      updateRate();
       dispatch({ type: 'set_loading', loading: true });
       const res = await fetch(
         `${orderApi.root}${orderApi.versionString}order`,
@@ -138,7 +132,6 @@ export default function PricingForm() {
       );
       const { message, ...data } = await res.json();
       if (res.ok) {
-        setEditMode(true);
         dispatch({ type: 'set_success', message, orderId: data.order_id });
       } else {
         dispatch({ type: 'set_error', message });
@@ -149,7 +142,12 @@ export default function PricingForm() {
   };
 
   if (!editMode)
-    return <Invoice onSubmit={createOrder} onEdit={() => setEditMode(true)} />;
+    return (
+      <Invoice
+        onSubmit={createOrder}
+        onEdit={() => dispatch({ type: 'edit_mode' })}
+      />
+    );
 
   return (
     <Box
