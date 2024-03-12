@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
-import { toPng } from 'html-to-image';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -13,10 +12,8 @@ import Alert from '@mui/lab/Alert';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Chip from '@mui/material/Chip';
-import Slide from '@mui/material/Slide';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import Snackbar from '@mui/material/Snackbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -27,7 +24,6 @@ import ErrorIcon from '@mui/icons-material/Error';
 import CheckIcon from '@mui/icons-material/CheckCircle';
 import LiraIcon from '@mui/icons-material/CurrencyLira';
 import BackspaceIcon from '@mui/icons-material/Backspace';
-import DownloadingIcon from '@mui/icons-material/Downloading';
 import { AppContext, AppDispatchContext } from '../../context';
 import { persianNumber } from '../../utils';
 import NumericFormat from '../Form/NumericFormat';
@@ -85,10 +81,8 @@ const schema = yup
 
 export default function PricingForm() {
   const form = useRef(null);
-  const invoice = useRef(null);
   const dispatch = useContext(AppDispatchContext);
   const [editMode, setEditMode] = useState(true);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const { order, pricing, loading, error, success, orderId } =
     useContext(AppContext);
   const { control, watch, setValue, handleSubmit } = useForm({
@@ -114,27 +108,6 @@ export default function PricingForm() {
     updateRate();
     document.getElementById('order-app').scrollIntoView({ behavior: 'smooth' });
   }, [editMode]);
-
-  const handleCapture = (callback) => {
-    setSnackbarOpen(true);
-    toPng(invoice.current, {
-      cacheBust: true,
-      quality: 1,
-    }).then((dataUrl) => {
-      var link = document.createElement('a');
-      link.download = 'rialir-invoice.png';
-      link.href = dataUrl;
-      link.click();
-      callback();
-    });
-  };
-
-  const handleCloseSnackbar = (_, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setSnackbarOpen(false);
-  };
 
   const onSubmit = async (form) => {
     await updateRate();
@@ -165,10 +138,8 @@ export default function PricingForm() {
       );
       const { message, ...data } = await res.json();
       if (res.ok) {
-        handleCapture(() => {
-          setEditMode(true);
-          dispatch({ type: 'set_success', message, orderId: data.order_id });
-        });
+        setEditMode(true);
+        dispatch({ type: 'set_success', message, orderId: data.order_id });
       } else {
         dispatch({ type: 'set_error', message });
       }
@@ -178,13 +149,7 @@ export default function PricingForm() {
   };
 
   if (!editMode)
-    return (
-      <Invoice
-        ref={invoice}
-        onSubmit={createOrder}
-        onEdit={() => setEditMode(true)}
-      />
-    );
+    return <Invoice onSubmit={createOrder} onEdit={() => setEditMode(true)} />;
 
   return (
     <Box
@@ -195,22 +160,6 @@ export default function PricingForm() {
         alignItems: 'center',
       }}
     >
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        TransitionComponent={Slide}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-      >
-        <Alert
-          variant="filled"
-          severity="success"
-          sx={{ width: '100%' }}
-          icon={<DownloadingIcon fontSize="small" />}
-        >
-          در حال دانلود پیش فاکتور...
-        </Alert>
-      </Snackbar>
       <Box
         ref={form}
         method="post"
