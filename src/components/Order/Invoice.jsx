@@ -31,7 +31,7 @@ moment.loadPersian({ usePersianDigits: true, dialect: 'persian-modern' });
 export default function Invoice({ onEdit, onSubmit }) {
   const ref = useRef(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const { order, pricing, loading, error, success } = useContext(AppContext);
+  const { order, pricing, loading, error } = useContext(AppContext);
   const incDsc = pricing.discount;
   const fee = parseInt(pricing.fee);
 
@@ -41,7 +41,7 @@ export default function Invoice({ onEdit, onSubmit }) {
 
   const handleCapture = () => {
     if (
-      confirm(
+      window.confirm(
         'اگر از پیش فاکتور بصورت کامل اسکرین شات گرفته اید، روی OK کلیک کنید.'
       )
     ) {
@@ -256,9 +256,8 @@ export default function Invoice({ onEdit, onSubmit }) {
       <Divider />
       <LoadingButton
         fullWidth
-        loading={loading}
+        loading={loading || snackbarOpen}
         onClick={handleCapture}
-        disabled={Boolean(success)}
         size="large"
         variant="contained"
         sx={{ my: 2 }}
