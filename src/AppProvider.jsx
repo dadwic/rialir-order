@@ -6,7 +6,7 @@ const initialState = {
   success: '',
   orderId: '',
   loading: false,
-  editMode: false,
+  editMode: true,
   pricing: {
     try_irt: '0',
     fee: '300',
