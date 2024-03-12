@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -9,13 +10,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
 import WarningIcon from '@mui/icons-material/Warning';
 
-export default function AlertDialog({ onClose }) {
+export default function AlertDialog() {
   const [open, setOpen] = useState(true);
 
-  const handleClose = () => {
-    setOpen(false);
-    onClose();
-  };
+  const handleClose = () => setOpen(false);
 
   return (
     <Dialog
@@ -52,7 +50,7 @@ export default function AlertDialog({ onClose }) {
             </Typography>
             <Typography component="li" align="justify" gutterBottom>
               لطفا دقت فرمایید هزینه کارگو سایت مورد نظر به قیمت کالاها اضافه
-              شود، در غیر این صورت سفارش شما تایید نخواهد شد.
+              شود، در غیر این صورت سفارش شما لغو خواهد شد.
             </Typography>
           </ul>
         </DialogContentText>
@@ -69,11 +67,11 @@ export default function AlertDialog({ onClose }) {
           >
             تایید میکنم
           </Button>
-          <Typography align="justify" variant="subtitle2" fontWeight={700}>
-            بعد از تایید، فایل پیش فاکتور بصورت اتوماتیک دانلود خواهد شد. در
-            صورت بروز خطا هنگام دانلود، حتما قبل از ثبت سفارش از پیش فاکتور
-            بصورت کامل اسکرین شات بگیرید.
-          </Typography>
+          <Alert severity="error" icon={false}>
+            <Typography align="justify" variant="subtitle2" fontWeight={900}>
+              حتما قبل از ثبت سفارش از پیش فاکتور بصورت کامل اسکرین شات بگیرید.
+            </Typography>
+          </Alert>
         </Box>
       </DialogActions>
     </Dialog>

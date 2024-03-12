@@ -1,14 +1,11 @@
-import React, { useContext, useEffect, useRef } from 'react';
-import { toPng } from 'html-to-image';
+import React, { useContext, useEffect } from 'react';
 import moment from 'moment-jalaali';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Paper from '@mui/material/Paper';
-import Slide from '@mui/material/Slide';
-import Divider from '@mui/material/Divider';
-import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import Divider from '@mui/material/Divider';
 import Table from '@mui/material/Table';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
@@ -20,7 +17,6 @@ import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import DownloadingIcon from '@mui/icons-material/Downloading';
 import { numFormat, persianNumber, tryFormat } from '../../utils';
 import { AppContext } from '../../context';
 import AlertDialog from './AlertDialog';
@@ -29,8 +25,6 @@ import Logo from '../Logo';
 moment.loadPersian({ usePersianDigits: true, dialect: 'persian-modern' });
 
 export default function Invoice({ onEdit, onSubmit }) {
-  const ref = useRef(null);
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const { order, pricing, loading, error, success } = useContext(AppContext);
   const incDsc = pricing.discount;
   const fee = parseInt(pricing.fee);
@@ -39,44 +33,9 @@ export default function Invoice({ onEdit, onSubmit }) {
     document.getElementById('order-app').scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  const handleCapture = () => {
-    setSnackbarOpen(true);
-    toPng(ref.current, { cacheBust: true, quality: 1 }).then(
-      function (dataUrl) {
-        var link = document.createElement('a');
-        link.download = 'rialir-invoice.png';
-        link.href = dataUrl;
-        link.click();
-      }
-    );
-  };
-
-  const handleCloseSnackbar = (_, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setSnackbarOpen(false);
-  };
-
   return (
-    <Box ref={ref} p={2} bgcolor="white">
-      <AlertDialog onClose={handleCapture} />
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        TransitionComponent={Slide}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-      >
-        <Alert
-          variant="filled"
-          severity="success"
-          sx={{ width: '100%' }}
-          icon={<DownloadingIcon fontSize="small" />}
-        >
-          در حال دانلود پیش فاکتور...
-        </Alert>
-      </Snackbar>
+    <Box p={2} id="invoice" bgcolor="white">
+      <AlertDialog />
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <div style={{ width: 48 }} />
         <div>
