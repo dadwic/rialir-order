@@ -85,6 +85,7 @@ const schema = yup
 
 export default function PricingForm() {
   const form = useRef(null);
+  const invoice = useRef(null);
   const dispatch = useContext(AppDispatchContext);
   const [editMode, setEditMode] = useState(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -116,7 +117,7 @@ export default function PricingForm() {
 
   const handleCapture = (callback) => {
     setSnackbarOpen(true);
-    toPng(document.getElementById('invoice'), {
+    toPng(invoice.current, {
       cacheBust: true,
       quality: 1,
     }).then((dataUrl) => {
@@ -177,7 +178,13 @@ export default function PricingForm() {
   };
 
   if (!editMode)
-    return <Invoice onEdit={() => setEditMode(true)} onSubmit={createOrder} />;
+    return (
+      <Invoice
+        ref={invoice}
+        onSubmit={createOrder}
+        onEdit={() => setEditMode(true)}
+      />
+    );
 
   return (
     <Box

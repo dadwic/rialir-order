@@ -3,10 +3,10 @@ import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
 import WarningIcon from '@mui/icons-material/Warning';
 
@@ -56,7 +56,7 @@ export default function AlertDialog() {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Box p={2}>
+        <Box p={2} flex={1}>
           <Button
             size="large"
             variant="contained"

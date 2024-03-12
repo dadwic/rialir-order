@@ -24,7 +24,7 @@ import Logo from '../Logo';
 
 moment.loadPersian({ usePersianDigits: true, dialect: 'persian-modern' });
 
-export default function Invoice({ onEdit, onSubmit }) {
+export default function Invoice({ ref, onEdit, onSubmit }) {
   const { order, pricing, loading, error, success } = useContext(AppContext);
   const incDsc = pricing.discount;
   const fee = parseInt(pricing.fee);
@@ -34,7 +34,7 @@ export default function Invoice({ onEdit, onSubmit }) {
   }, []);
 
   return (
-    <Box p={2} id="invoice" bgcolor="white">
+    <Box p={2} ref={ref} bgcolor="white">
       <AlertDialog />
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <div style={{ width: 48 }} />
