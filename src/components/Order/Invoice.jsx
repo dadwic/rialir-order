@@ -30,7 +30,7 @@ import Logo from '../Logo';
 
 moment.loadPersian({ usePersianDigits: true, dialect: 'persian-modern' });
 
-export default function Invoice({ onEdit }) {
+export default function Invoice() {
   const ref = useRef(null);
   const dispatch = useContext(AppDispatchContext);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -58,35 +58,41 @@ export default function Invoice({ onEdit }) {
   };
 
   const handleSubmit = async () => {
-    if (
-      window.confirm(
-        'اگر از پیش فاکتور بصورت کامل اسکرین شات گرفته اید، روی OK کلیک کنید.'
-      )
-    ) {
-      try {
-        dispatch({ type: 'set_loading', loading: true });
-        const res = await fetch(
-          `${orderApi.root}${orderApi.versionString}order`,
-          {
-            method: 'POST',
-            headers: {
-              'X-WP-Nonce': orderApi.nonce,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(order),
+    if (!success) {
+      if (
+        window.confirm(
+          'اگر از پیش فاکتور بصورت کامل اسکرین شات گرفته اید، روی OK کلیک کنید.'
+        )
+      ) {
+        try {
+          dispatch({ type: 'set_loading', loading: true });
+          const res = await fetch(
+            `${orderApi.root}${orderApi.versionString}order`,
+            {
+              method: 'POST',
+              headers: {
+                'X-WP-Nonce': orderApi.nonce,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(order),
+            }
+          );
+          const { message, orderId } = await res.json();
+          if (res.ok) {
+            dispatch({ type: 'set_success', message, orderId });
+            handleCapture();
+          } else {
+            dispatch({ type: 'set_error', message });
           }
-        );
-        const { message, orderId } = await res.json();
-        if (res.ok) {
-          dispatch({ type: 'set_success', message, orderId });
-          handleCapture();
-        } else {
+        } catch ({ message }) {
           dispatch({ type: 'set_error', message });
         }
-      } catch ({ message }) {
-        dispatch({ type: 'set_error', message });
       }
-    }
+    } else dispatch({ type: 'reset' });
+  };
+
+  const handleEdit = () => {
+    dispatch({ type: success ? 'reset' : 'edit_mode' });
   };
 
   const handleCloseSnackbar = (_, reason) => {
@@ -115,7 +121,7 @@ export default function Invoice({ onEdit }) {
           در حال دانلود پیش فاکتور...
         </Alert>
       </Snackbar>
-      {Boolean(success) && (
+      {success && (
         <>
           <Button
             fullWidth
@@ -149,11 +155,11 @@ export default function Invoice({ onEdit }) {
             textAlign="center"
             color="text.secondary"
           >
-            {moment().zone('+0330').format('dddd jD jMMMM jYYYY - HH:mm')}
+            {moment().format('dddd jD jMMMM jYYYY - HH:mm')}
           </Typography>
         </div>
         <IconButton
-          onClick={onEdit}
+          onClick={handleEdit}
           disabled={loading}
           size="large"
           color="primary"
@@ -319,7 +325,7 @@ export default function Invoice({ onEdit }) {
       >
         ثبت سفارش
       </LoadingButton>
-      {Boolean(error) && (
+      {error && (
         <Alert icon={<ErrorIcon />} sx={{ mb: 2 }} severity="error">
           {error}
         </Alert>

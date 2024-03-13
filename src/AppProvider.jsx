@@ -2,9 +2,9 @@ import React, { useReducer } from 'react';
 import { AppContext, AppDispatchContext } from './context';
 
 const initialState = {
-  error: '',
-  success: '',
-  orderId: '',
+  error: null,
+  success: null,
+  orderId: null,
   loading: false,
   editMode: true,
   pricing: {
@@ -43,29 +43,28 @@ function appReducer(data, action) {
       return initialState;
     }
     case 'set_order': {
-      return { ...data, order: action.data, orderId: '', editMode: false };
+      return { ...data, order: action.data, orderId: null, editMode: false };
     }
     case 'set_pricing': {
       return { ...data, pricing: action.data, loading: false };
     }
     case 'set_loading': {
-      return { ...data, loading: action.loading, success: '', error: '' };
+      return { ...data, loading: action.loading, success: null, error: null };
     }
     case 'edit_mode': {
       return { ...data, editMode: true };
     }
     case 'set_success': {
       return {
-        ...initialState,
+        ...data,
         success: action.message,
         orderId: action.orderId,
-        editMode: false,
         loading: false,
-        error: '',
+        error: null,
       };
     }
     case 'set_error': {
-      return { ...data, error: action.message, success: '', loading: false };
+      return { ...data, error: action.message, success: null, loading: false };
     }
     default: {
       throw Error('Unknown action: ' + action.type);

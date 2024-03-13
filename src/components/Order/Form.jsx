@@ -114,8 +114,7 @@ export default function PricingForm() {
     dispatch({ type: 'set_order', data });
   };
 
-  if (!editMode)
-    return <Invoice onEdit={() => dispatch({ type: 'edit_mode' })} />;
+  if (!editMode) return <Invoice />;
 
   return (
     <Box
@@ -344,7 +343,7 @@ export default function PricingForm() {
         >
           ثبت سفارش
         </LoadingButton>
-        {Boolean(error) && (
+        {error && (
           <Alert
             severity="error"
             icon={<ErrorIcon fontSize="small" />}
