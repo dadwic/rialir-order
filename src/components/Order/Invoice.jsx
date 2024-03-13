@@ -301,7 +301,7 @@ export default function Invoice({ onEdit }) {
             روش پرداخت
           </Typography>
           <Typography gutterBottom>شماره کارت بانک سامان</Typography>
-          <Typography fontWeight={700} sx={{ direction: 'ltr' }} gutterBottom>
+          <Typography fontWeight={700} sx={{ direction: 'rtl' }} gutterBottom>
             6219&nbsp;8619&nbsp;0609&nbsp;8149
           </Typography>
           <Typography>بنام مهرداد مهرعلیان</Typography>

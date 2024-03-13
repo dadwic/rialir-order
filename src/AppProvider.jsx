@@ -59,6 +59,7 @@ function appReducer(data, action) {
         ...initialState,
         success: action.message,
         orderId: action.orderId,
+        editMode: false,
         loading: false,
         error: '',
       };
