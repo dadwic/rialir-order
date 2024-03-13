@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack';
 import Paper from '@mui/material/Paper';
 import Alert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
+import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Snackbar from '@mui/material/Snackbar';
 import Table from '@mui/material/Table';
@@ -18,20 +19,23 @@ import TableContainer from '@mui/material/TableContainer';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
+import CheckIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DownloadingIcon from '@mui/icons-material/Downloading';
 import { numFormat, persianNumber, tryFormat } from '../../utils';
-import { AppContext } from '../../context';
+import { AppContext, AppDispatchContext } from '../../context';
 import AlertDialog from './AlertDialog';
 import Logo from '../Logo';
 
 moment.loadPersian({ usePersianDigits: true, dialect: 'persian-modern' });
 
-export default function Invoice({ onEdit, onSubmit }) {
+export default function Invoice({ onEdit }) {
   const ref = useRef(null);
+  const dispatch = useContext(AppDispatchContext);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const { order, pricing, loading, error } = useContext(AppContext);
+  const { order, pricing, loading, error, success, orderId } =
+    useContext(AppContext);
   const incDsc = pricing.discount;
   const fee = parseInt(pricing.fee);
 
@@ -40,27 +44,48 @@ export default function Invoice({ onEdit, onSubmit }) {
   }, []);
 
   const handleCapture = () => {
+    setSnackbarOpen(true);
+    toPng(ref.current, {
+      cacheBust: true,
+      quality: 1,
+    }).then((dataUrl) => {
+      var link = document.createElement('a');
+      link.download = 'rialir-invoice.png';
+      link.target = '_blank';
+      link.href = dataUrl;
+      link.click();
+    });
+  };
+
+  const handleSubmit = async () => {
     if (
       window.confirm(
         'اگر از پیش فاکتور بصورت کامل اسکرین شات گرفته اید، روی OK کلیک کنید.'
       )
     ) {
-      setSnackbarOpen(true);
-      toPng(ref.current, {
-        cacheBust: true,
-        quality: 1,
-      })
-        .then((dataUrl) => {
-          var link = document.createElement('a');
-          link.download = 'rialir-invoice.png';
-          link.target = '_blank';
-          link.href = dataUrl;
-          link.click();
-        })
-        .finally(() => {
-          setSnackbarOpen(false);
-          onSubmit();
-        });
+      try {
+        dispatch({ type: 'set_loading', loading: true });
+        const res = await fetch(
+          `${orderApi.root}${orderApi.versionString}order`,
+          {
+            method: 'POST',
+            headers: {
+              'X-WP-Nonce': orderApi.nonce,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(order),
+          }
+        );
+        const { message, orderId } = await res.json();
+        if (res.ok) {
+          dispatch({ type: 'set_success', message, orderId });
+          handleCapture();
+        } else {
+          dispatch({ type: 'set_error', message });
+        }
+      } catch ({ message }) {
+        dispatch({ type: 'set_error', message });
+      }
     }
   };
 
@@ -76,6 +101,7 @@ export default function Invoice({ onEdit, onSubmit }) {
       <AlertDialog />
       <Snackbar
         open={snackbarOpen}
+        autoHideDuration={3000}
         TransitionComponent={Slide}
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
@@ -89,6 +115,23 @@ export default function Invoice({ onEdit, onSubmit }) {
           در حال دانلود پیش فاکتور...
         </Alert>
       </Snackbar>
+      {Boolean(success) && (
+        <>
+          <Button
+            fullWidth
+            color="success"
+            variant="outlined"
+            href={`https://www.rialir.com/account/view-order/${orderId}/`}
+            target="_blank"
+            sx={{ mb: 1 }}
+          >
+            جزئیات سفارش شماره {persianNumber(orderId)}
+          </Button>
+          <Alert icon={<CheckIcon fontSize="small" />} severity="success">
+            <div dangerouslySetInnerHTML={{ __html: success }} />
+          </Alert>
+        </>
+      )}
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <div style={{ width: 48 }} />
         <div>
@@ -267,8 +310,9 @@ export default function Invoice({ onEdit, onSubmit }) {
       <Divider sx={{ display: { xs: 'none', sm: 'block' } }} />
       <LoadingButton
         fullWidth
+        disabled={Boolean(success)}
         loading={loading || snackbarOpen}
-        onClick={handleCapture}
+        onClick={handleSubmit}
         size="large"
         variant="contained"
         sx={{ my: 2 }}

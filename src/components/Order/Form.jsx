@@ -15,7 +15,6 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import ErrorIcon from '@mui/icons-material/Error';
-import CheckIcon from '@mui/icons-material/CheckCircle';
 import LiraIcon from '@mui/icons-material/CurrencyLira';
 import BackspaceIcon from '@mui/icons-material/Backspace';
 import { AppContext, AppDispatchContext } from '../../context';
@@ -76,8 +75,7 @@ const schema = yup
 export default function PricingForm() {
   const form = useRef(null);
   const dispatch = useContext(AppDispatchContext);
-  const { order, pricing, loading, editMode, error, success, orderId } =
-    useContext(AppContext);
+  const { order, pricing, loading, editMode, error } = useContext(AppContext);
   const { control, watch, setValue, handleSubmit } = useForm({
     resolver: yupResolver(schema),
     values: order,
@@ -116,38 +114,8 @@ export default function PricingForm() {
     dispatch({ type: 'set_order', data });
   };
 
-  const createOrder = async () => {
-    try {
-      dispatch({ type: 'set_loading', loading: true });
-      const res = await fetch(
-        `${orderApi.root}${orderApi.versionString}order`,
-        {
-          method: 'POST',
-          headers: {
-            'X-WP-Nonce': orderApi.nonce,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(order),
-        }
-      );
-      const { message, ...data } = await res.json();
-      if (res.ok) {
-        dispatch({ type: 'set_success', message, orderId: data.order_id });
-      } else {
-        dispatch({ type: 'set_error', message });
-      }
-    } catch ({ message }) {
-      dispatch({ type: 'set_error', message });
-    }
-  };
-
   if (!editMode)
-    return (
-      <Invoice
-        onSubmit={createOrder}
-        onEdit={() => dispatch({ type: 'edit_mode' })}
-      />
-    );
+    return <Invoice onEdit={() => dispatch({ type: 'edit_mode' })} />;
 
   return (
     <Box
@@ -167,34 +135,16 @@ export default function PricingForm() {
       >
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {Boolean(success) ? (
-              <>
-                <Button
-                  fullWidth
-                  color="success"
-                  variant="outlined"
-                  href={`https://www.rialir.com/account/view-order/${orderId}/`}
-                  target="_blank"
-                  sx={{ mb: 1 }}
-                >
-                  جزئیات سفارش شماره {persianNumber(orderId)}
-                </Button>
-                <Alert icon={<CheckIcon fontSize="small" />} severity="success">
-                  <div dangerouslySetInnerHTML={{ __html: success }} />
-                </Alert>
-              </>
-            ) : (
-              <Typography variant="subtitle2" color="error" align="center">
-                قبل از ثبت سفارش، آدرس خود را در صفحه&nbsp;
-                <a
-                  target="_blank"
-                  href="https://www.rialir.com/account/edit-address/"
-                >
-                  آدرس ها
-                </a>
-                &nbsp;ثبت کنید.
-              </Typography>
-            )}
+            <Typography variant="subtitle2" color="error" align="center">
+              قبل از ثبت سفارش، آدرس خود را در صفحه&nbsp;
+              <a
+                target="_blank"
+                href="https://www.rialir.com/account/edit-address/"
+              >
+                آدرس ها
+              </a>
+              &nbsp;ثبت کنید.
+            </Typography>
             <Button
               fullWidth
               size="large"
