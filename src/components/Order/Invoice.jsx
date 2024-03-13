@@ -53,10 +53,14 @@ export default function Invoice({ onEdit, onSubmit }) {
         .then((dataUrl) => {
           var link = document.createElement('a');
           link.download = 'rialir-invoice.png';
+          link.target = '_blank';
           link.href = dataUrl;
           link.click();
         })
-        .finally(onSubmit);
+        .finally(() => {
+          setSnackbarOpen(false);
+          onSubmit();
+        });
     }
   };
 
@@ -72,7 +76,6 @@ export default function Invoice({ onEdit, onSubmit }) {
       <AlertDialog />
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={3000}
         TransitionComponent={Slide}
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
@@ -227,10 +230,14 @@ export default function Invoice({ onEdit, onSubmit }) {
       <Grid container>
         <Grid
           item
-          xs
+          sm
+          xs={12}
           sx={{
             py: 2,
             textAlign: { xs: 'center', sm: 'center', md: 'left' },
+            borderBottomWidth: { xs: 1, sm: 0 },
+            borderBottomStyle: 'solid',
+            borderBottomColor: (t) => t.palette.divider,
           }}
         >
           <Typography variant="h6" gutterBottom>
@@ -239,24 +246,28 @@ export default function Invoice({ onEdit, onSubmit }) {
           <Typography gutterBottom>{orderApi?.full_name || '-'}</Typography>
           <Typography gutterBottom>{orderApi?.phone_number || '-'}</Typography>
         </Grid>
-        <Divider flexItem orientation="vertical">
+        <Divider
+          flexItem
+          orientation="vertical"
+          sx={{ display: { xs: 'none', sm: 'flex' } }}
+        >
           <Logo />
         </Divider>
-        <Grid item xs sx={{ py: 2, textAlign: 'center' }}>
+        <Grid item sm xs={12} sx={{ py: 2, textAlign: 'center' }}>
           <Typography variant="h6" gutterBottom>
             روش پرداخت
           </Typography>
           <Typography gutterBottom>شماره کارت بانک سامان</Typography>
-          <Typography fontWeight={700} gutterBottom>
+          <Typography fontWeight={700} sx={{ direction: 'ltr' }} gutterBottom>
             6219&nbsp;8619&nbsp;0609&nbsp;8149
           </Typography>
           <Typography>بنام مهرداد مهرعلیان</Typography>
         </Grid>
       </Grid>
-      <Divider />
+      <Divider sx={{ display: { xs: 'none', sm: 'block' } }} />
       <LoadingButton
         fullWidth
-        loading={loading}
+        loading={loading || snackbarOpen}
         onClick={handleCapture}
         size="large"
         variant="contained"
