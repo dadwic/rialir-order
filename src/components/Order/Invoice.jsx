@@ -58,41 +58,39 @@ export default function Invoice() {
   };
 
   const handleSubmit = async () => {
-    if (!success) {
-      if (
-        window.confirm(
-          'اگر از پیش فاکتور بصورت کامل اسکرین شات گرفته اید، روی OK کلیک کنید.'
-        )
-      ) {
-        try {
-          dispatch({ type: 'set_loading', loading: true });
-          const res = await fetch(
-            `${orderApi.root}${orderApi.versionString}order`,
-            {
-              method: 'POST',
-              headers: {
-                'X-WP-Nonce': orderApi.nonce,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(order),
-            }
-          );
-          const { message, orderId } = await res.json();
-          if (res.ok) {
-            dispatch({ type: 'set_success', message, orderId });
-            handleCapture();
-          } else {
-            dispatch({ type: 'set_error', message });
+    if (
+      window.confirm(
+        'اگر از پیش فاکتور بصورت کامل اسکرین شات گرفته اید، روی OK کلیک کنید.'
+      )
+    ) {
+      try {
+        dispatch({ type: 'set_loading', loading: true });
+        const res = await fetch(
+          `${orderApi.root}${orderApi.versionString}order`,
+          {
+            method: 'POST',
+            headers: {
+              'X-WP-Nonce': orderApi.nonce,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(order),
           }
-        } catch ({ message }) {
+        );
+        const { message, orderId } = await res.json();
+        if (res.ok) {
+          dispatch({ type: 'set_success', message, orderId });
+          handleCapture();
+        } else {
           dispatch({ type: 'set_error', message });
         }
+      } catch ({ message }) {
+        dispatch({ type: 'set_error', message });
       }
-    } else dispatch({ type: 'reset' });
+    }
   };
 
   const handleEdit = () => {
-    dispatch({ type: success ? 'reset' : 'edit_mode' });
+    dispatch({ type: 'edit_mode' });
   };
 
   const handleCloseSnackbar = (_, reason) => {
@@ -160,7 +158,7 @@ export default function Invoice() {
         </div>
         <IconButton
           onClick={handleEdit}
-          disabled={loading}
+          disabled={loading || Boolean(success)}
           size="large"
           color="primary"
         >
