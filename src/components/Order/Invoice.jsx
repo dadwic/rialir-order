@@ -230,7 +230,7 @@ export default function Invoice() {
                   تاریخ بروزرسانی‌ قیمت لیر:&nbsp;
                   {moment(
                     pricing.updated_at || new Date().toISOString()
-                  ).format('jYYYY/jMM/jDD - HH:mm:ss')}
+                  ).format('jD jMMMM jYYYY ساعت HH:mm')}
                 </Typography>
               </TableCell>
             </TableRow>
