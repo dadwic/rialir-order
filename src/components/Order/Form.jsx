@@ -86,17 +86,22 @@ export default function PricingForm() {
   });
   const new_address = watch('new_address');
 
-  const updateRate = useCallback(async () => {
+  const updateRates = useCallback(async () => {
     dispatch({ type: 'set_loading', loading: true });
     // Update TRY price
-    const res = await fetch(`${orderApi.root}${orderApi.versionString}pricing`);
+    const res = await fetch(`${orderApi.root}${orderApi.versionString}rates`, {
+      headers: {
+        'X-WP-Nonce': orderApi.nonce,
+        'Content-Type': 'application/json',
+      },
+    });
     const data = await res.json();
     if (res.ok) dispatch({ type: 'set_pricing', data });
     else dispatch({ type: 'set_error', message: 'خطا در بروزرسانی قیمت لیر' });
   });
 
   useEffect(() => {
-    updateRate();
+    updateRates();
   }, []);
 
   useEffect(() => {
@@ -104,10 +109,9 @@ export default function PricingForm() {
   }, [editMode]);
 
   const onSubmit = async (form) => {
-    await updateRate();
+    await updateRates();
     const subtotal = parseFloat(form.subtotal);
-    const fee = parseInt(pricing.fee);
-    const rate = parseInt(pricing.try_irt) + fee;
+    const rate = parseInt(pricing.try_irt.shop);
     // Convert toman to rial
     const total = rate * subtotal * 10;
     const data = { ...form, total };
@@ -348,7 +352,7 @@ export default function PricingForm() {
             severity="error"
             icon={<ErrorIcon fontSize="small" />}
             action={
-              <Button color="inherit" size="small" onClick={updateRate}>
+              <Button color="inherit" size="small" onClick={updateRates}>
                 تلاش مجدد
               </Button>
             }

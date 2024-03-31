@@ -37,7 +37,7 @@ export default function Invoice() {
   const { order, pricing, loading, error, success, orderId } =
     useContext(AppContext);
   const incDsc = pricing.discount;
-  const fee = parseInt(pricing.fee);
+  const fee = pricing.try_irt.fee;
 
   useEffect(() => {
     document.getElementById('order-app').scrollIntoView({ behavior: 'smooth' });
@@ -189,7 +189,7 @@ export default function Invoice() {
                 }}
               >
                 <Typography variant="subtitle2">
-                  {numFormat(pricing.try_irt)} تومان
+                  {numFormat(pricing.try_irt.sell)} تومان
                 </Typography>
               </TableCell>
               <TableCell
@@ -229,7 +229,7 @@ export default function Invoice() {
                 <Typography variant="subtitle2" color="text.secondary">
                   تاریخ بروزرسانی‌ قیمت لیر:&nbsp;
                   {moment
-                    .unix(pricing.time || new Date().getTime())
+                    .unix(pricing.updated_at || new Date().getTime())
                     .format('jYYYY/jMM/jDD - HH:mm:ss')}
                 </Typography>
               </TableCell>

@@ -8,11 +8,10 @@ const initialState = {
   loading: false,
   editMode: true,
   pricing: {
-    try_irt: '0',
-    fee: '300',
+    try_irt: { sell: 0, fee: 0, shop: 0 },
     discountVal: '',
     discount: false,
-    time: null,
+    updated_at: null,
   },
   order: {
     subtotal: '',
