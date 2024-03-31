@@ -228,9 +228,9 @@ export default function Invoice() {
               <TableCell colSpan={3}>
                 <Typography variant="subtitle2" color="text.secondary">
                   تاریخ بروزرسانی‌ قیمت لیر:&nbsp;
-                  {moment
-                    .unix(pricing.updated_at || new Date().getTime())
-                    .format('jYYYY/jMM/jDD - HH:mm:ss')}
+                  {moment(
+                    pricing.updated_at || new Date().toISOString()
+                  ).format('jYYYY/jMM/jDD - HH:mm:ss')}
                 </Typography>
               </TableCell>
             </TableRow>
