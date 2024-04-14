@@ -170,7 +170,7 @@ export default function Invoice() {
           <TableHead>
             <TableRow>
               <TableCell align="center">قیمت لیر</TableCell>
-              <TableCell align="center">کارمزد خرید</TableCell>
+              <TableCell align="center">کارمزد</TableCell>
               <TableCell align="center">قابل پرداخت</TableCell>
             </TableRow>
           </TableHead>
@@ -227,10 +227,10 @@ export default function Invoice() {
             <TableRow>
               <TableCell colSpan={3}>
                 <Typography variant="subtitle2" color="text.secondary">
-                  تاریخ بروزرسانی‌ قیمت لیر:&nbsp;
+                  آخرین به‌روزرسانی قیمت لیر:&nbsp;
                   {moment(
                     pricing.updated_at || new Date().toISOString()
-                  ).format('jD jMMMM jYYYY ساعت HH:mm')}
+                  ).format('jD jMMMM jYYYY [ساعت] H:mm')}
                 </Typography>
               </TableCell>
             </TableRow>
