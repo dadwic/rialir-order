@@ -274,44 +274,6 @@ export default function Invoice() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Grid container>
-        <Grid
-          item
-          sm
-          xs={12}
-          sx={{
-            py: 2,
-            textAlign: { xs: 'center', sm: 'center', md: 'left' },
-            borderBottomWidth: { xs: 1, sm: 0 },
-            borderBottomStyle: 'solid',
-            borderBottomColor: (t) => t.palette.divider,
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            مشخصات خریدار
-          </Typography>
-          <Typography gutterBottom>{orderApi?.full_name || '-'}</Typography>
-          <Typography gutterBottom>{orderApi?.phone_number || '-'}</Typography>
-        </Grid>
-        <Divider
-          flexItem
-          orientation="vertical"
-          sx={{ display: { xs: 'none', sm: 'flex' } }}
-        >
-          <Logo />
-        </Divider>
-        <Grid item sm xs={12} sx={{ py: 2, textAlign: 'center' }}>
-          <Typography variant="h6" gutterBottom>
-            روش پرداخت
-          </Typography>
-          <Typography gutterBottom>شماره کارت بانک سامان</Typography>
-          <Typography fontWeight={700} sx={{ direction: 'rtl' }} gutterBottom>
-            6219&nbsp;8619&nbsp;0609&nbsp;8149
-          </Typography>
-          <Typography>بنام مهرداد مهرعلیان</Typography>
-        </Grid>
-      </Grid>
-      <Divider sx={{ display: { xs: 'none', sm: 'block' } }} />
       <LoadingButton
         fullWidth
         disabled={Boolean(success)}
@@ -328,23 +290,52 @@ export default function Invoice() {
           {error}
         </Alert>
       )}
-      <Box sx={{ '& p': { fontWeight: 700 } }}>
-        <Typography gutterBottom>توضیحات: {order.description}</Typography>
-        <Typography gutterBottom>
-          با ثبت سفارش،&nbsp;
-          <a target="_blank" href="https://www.rialir.com/terms/">
-            شرایط و قوانین ریالیر
-          </a>
-          &nbsp;را می‌پذیرید.
-        </Typography>
-        <Typography gutterBottom>
-          در توضیحات تراکنش ذکر شود: بابت پرداخت قرض و تادیه دیون
-        </Typography>
-        <Typography>
-          مدت زمان تحویل سفارش: ۲۰ تا ۳۰ روز کاری ترکیه بعد از تحویل کالا توسط
-          فروشنده به دفتر ریالیر در استانبول
-        </Typography>
-      </Box>
+      <Grid container>
+        <Grid item sm xs={12} py={2}>
+          <Box sx={{ '& p': { fontWeight: 700 } }}>
+            <Typography gutterBottom>توضیحات: {order.description}</Typography>
+            <Typography gutterBottom>
+              با ثبت سفارش،&nbsp;
+              <a target="_blank" href="https://www.rialir.com/terms/">
+                شرایط و قوانین ریالیر
+              </a>
+              &nbsp;را می‌پذیرید.
+            </Typography>
+            <Typography gutterBottom>
+              در توضیحات تراکنش ذکر شود: بابت پرداخت قرض و تادیه دیون
+            </Typography>
+            <Typography>
+              مدت زمان تحویل سفارش: ۲۰ تا ۳۰ روز کاری ترکیه بعد از تحویل کالا
+              توسط فروشنده به دفتر ریالیر در استانبول
+            </Typography>
+          </Box>
+        </Grid>
+        <Divider
+          flexItem
+          orientation="vertical"
+          sx={{ display: { xs: 'none', sm: 'flex' } }}
+        >
+          <Logo />
+        </Divider>
+        <Grid
+          item
+          sm
+          py={2}
+          xs={12}
+          sx={{
+            textAlign: 'center',
+            borderTopWidth: { xs: 1, sm: 0 },
+            borderTopStyle: 'solid',
+            borderTopColor: (t) => t.palette.divider,
+          }}
+        >
+          <Typography variant="h6" gutterBottom>
+            مشخصات خریدار
+          </Typography>
+          <Typography gutterBottom>{orderApi?.full_name || '-'}</Typography>
+          <Typography gutterBottom>{orderApi?.email || '-'}</Typography>
+        </Grid>
+      </Grid>
     </Box>
   );
 }
